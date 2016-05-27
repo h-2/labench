@@ -1,0 +1,157 @@
+#!/bin/sh
+#
+# labench -- the Local Aligner BENCHmark
+#   version 0.1
+#   (c) 2016 Hannes Hauswedell, Freie Universität Berlin
+#   licensed under the MIT license
+#   see https://github.com/h-2/labench for more details
+#
+
+usage()
+{
+    echo "labench -- the Local Aligner BENCHmark"
+    echo "======================================"
+    echo ""
+    echo "USAGE: labench show-profiles"
+    echo "       labench run [config.sh]"
+    echo ""
+    echo "show-profiles"
+    echo "-------------"
+    echo ""
+    echo "lists the available modules and profiles"
+    echo ""
+    echo "run"
+    echo "---"
+    echo ""
+    echo "You must define some environment variables or pass a config script"
+    echo "that will be sourced (and provides them)."
+    echo ""
+    echo "Mandatoriy variables:"
+    echo " QUERY_FA         path to the query file (fasta)"
+    echo " DATABASE_FA      path to the database file (fasta)"
+    echo " MODPROFS         space-seperated list of colon-seperated module:profile pairs"
+    echo ""
+    echo "Optional variables:"
+    echo " PROGRAMMODE      BLASTN BLASTP BLASTX TBLASTN TBLASTX (default is BLASTX)"
+    echo " MAXDBENTRIES     maximum number of hits per query sequence, defaults to 256"
+    echo " TODO"
+    echo ""
+    echo ""
+    echo "about"
+    echo "-----"
+    echo ""
+    echo "version 0.1"
+    echo "(c) 2016 Hannes Hauswedell, Freie Universität Berlin"
+    echo "licensed under the MIT license"
+    echo "see https://github.com/h-2/labench for more details"
+}
+
+cleanup()
+{
+    rm -r "${TMPDIR}"
+}
+
+# exit whenever a simple command returns non-zero
+set -e
+
+# error when reading from an undefined variable
+set -u
+
+if [ $# -gt 2 ]; then
+    echo "ERROR: wrong number of arguments" > /dev/stderr
+    echo "--------------------------------" > /dev/stderr
+    usage
+    exit 127
+fi
+
+BENCHDIR="$(dirname "$0")"
+
+# source default config
+. "${BENCHDIR}/config/default.sh"
+
+# two arguments
+if [ $# -eq 2 ]; then
+    if [ "$1" != "run" ]; then
+        echo "ERROR: wrong arguments" > /dev/stderr
+        echo "----------------------" > /dev/stderr
+        usage
+        exit 127
+    fi
+    # source the config given as argument
+    . "$1"
+fi
+
+# one argument
+if [ $# -eq 1 ]; then
+    if [ "$1" = "show-profiles" ]; then
+        . "${BENCHDIR}/src/show_profiles.sh"
+        show_profiles
+        exit 0
+    fi
+    if [ "$1" != "run" ]; then
+        echo "ERROR: wrong arguments" > /dev/stderr
+        echo "----------------------" > /dev/stderr
+        usage
+        exit 127
+    fi
+fi
+
+# check validity of input files
+if ( ! ( [ -f "$QUERY_FA" ] && [ -f "$DATABASE_FA" ] && [ -r "$QUERY_FA" ] && [ -r "$DATABASE_FA" ] ) ); then
+  echo "ERROR: input files don't exist or are not readable" > /dev/stderr
+  echo "--------------------------------------------------" > /dev/stderr
+  usage
+  exit 127
+fi
+
+# for safety regions always create a TMPDIR inside TMPDIR (we will delete this later)
+TMPDIR="${TMPDIR}/labench-$$"
+
+# check validity of tmpdir and outputdir
+for DIR in "${TMPDIR}" "${OUTDIR}"; do
+    if [ -d "$DIR" ]; then
+    echo "ERROR: output or tmp directory already exist" > /dev/stderr
+    echo "--------------------------------------------" > /dev/stderr
+    usage
+    exit 127
+    else
+        mkdir -p "$DIR"
+        if [ $? -ne 0 ]; then
+            echo "ERROR: output or tmp directory could not be created" > /dev/stderr
+            echo "---------------------------------------------------" > /dev/stderr
+            usage
+            exit 127
+        fi
+    fi
+done
+
+# sanatize variables
+QUERY_FA=$(readlink -f "${QUERY_FA}")
+DATABASE_FA=$(readlink -f "${DATABASE_FA}")
+OUTDIR=$(readlink -f "${OUTDIR}")
+
+# catch interrupts and terms
+trap 'cleanup' 0 1 2 3 15
+
+# load all required functions
+. "${BENCHDIR}/src/*.sh"
+
+# these are the modules
+MODULES=`ls ${BENCHDIR}/modules`
+
+# deactivate dynamic cpu frequency scaling
+setCpuFreqFixed
+
+# create the indexes
+create_indexes
+
+# # run the benchmark
+# run_benchmark
+#
+# # write report
+# create_report
+
+# reactivate dynamic cpu frequency scaling
+setCpuFreqOnDemand
+
+cleanup
