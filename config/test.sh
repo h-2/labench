@@ -1,10 +1,15 @@
 #!/bin/sh
 
-QUERY_FA="~/takifugu/sequences/query/illumina/rapsearch_ref/illumina_1200k_len72.fasta"
+QUERY_FA="${HOME}/sequences/100k_long_reads.fna"
+DATABASE_FA="${HOME}/sequences/uniprot_sprot.fasta"
 
-DATABASE_FA="~/takifugu/sequences/db/uniprot_sprot.fasta"
+# MODPROFS="lambda-0.9.4:blastx_default
+# lambda-0.9.4:blastx_fast
+# lambda-0.9.4:blastx_slow
+# RAPSearch2.09_64bits:blastx_default
+# RAPSearch2.09_64bits:blastx_fast"
 
-TMPDIR=${TMPDIR-"/tmp"}
+MODPROFS="lambda-0.9.4:blastx_default
+RAPSearch2.09_64bits:blastx_fast"
 
-# outdir
-OUTDIR=${OUTDIR-"${TMPDIR}/labench"}
+DEBUG=1

@@ -1,11 +1,17 @@
 #!/bin/sh
 
-RET=0
-sudo -n cpufreq-info -l >/dev/null 2>&1
-# cpufreq-info -l >/dev/null 2>&1
-[ $? -eq 0 ] && echo "No sudo rights for cpufreq-tools or cpufreq-tools not available :(" && RET=1
-GOVERNORS=$(cpufreq-info -g)
-[ "${GOVERNORS#*userspace}" = "${GOVERNORS}" ] && echo "No userspace cpu governor available :(" && RET=1
+set +e
+
+RET=1
+
+if [ "$(uname -s)" = "Linux" ]; then
+    RET=0
+    sudo -n cpufreq-info -l >/dev/null 2>&1
+    # cpufreq-info -l >/dev/null 2>&1
+    [ $? -eq 0 ] && echo "No sudo rights for cpufreq-tools or cpufreq-tools not available :(" && RET=1
+    GOVERNORS=$(cpufreq-info -g)
+    [ "${GOVERNORS#*userspace}" = "${GOVERNORS}" ] && echo "No userspace cpu governor available :(" && RET=1
+fi
 
 if [ $RET -eq 0 ]; then # there were no problems
     setCpuFreqFixed()
@@ -45,3 +51,4 @@ else
     setCpuFreqOnDemand() { }
 fi
 
+set -e

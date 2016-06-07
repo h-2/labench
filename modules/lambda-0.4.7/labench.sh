@@ -32,7 +32,7 @@ setupCommands()
     esac
 
     ## run command definitions
-    BASECMD="${BINDIR}/lambda -q query.fasta -d ${TMPDIR}/INDEX/${INDEXIDENT}/db.fasta -e ${EVALUE} -v 2 -t ${NCPU} -o ${OUTPUT}.m8 -nm ${MAXDBENTRIES}"
+    BASECMD="${BINDIR}/lambda -q query.fasta -d ${TMPDIR}/INDEX/${INDEXIDENT}/db.fasta -e ${EVALUE} -v 2 -t ${NCPU} -o ${OUTPUT} -nm ${MAXDBENTRIES}"
 
     case $PROFILE in
         "blastx_default")

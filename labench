@@ -64,7 +64,7 @@ if [ $# -gt 2 ]; then
     exit 127
 fi
 
-BENCHDIR="$(dirname "$0")"
+BENCHDIR="$(readlink -f $(dirname "$0"))"
 
 # source default config
 . "${BENCHDIR}/config/default.sh"
@@ -77,8 +77,14 @@ if [ $# -eq 2 ]; then
         usage
         exit 127
     fi
+    if [ ! -r "$2" ]; then
+        echo "ERROR: config file doesn't exist or not readable." > /dev/stderr
+        echo "-------------------------------------------------" > /dev/stderr
+        usage
+        exit 127
+    fi
     # source the config given as argument
-    . "$1"
+    . "$2"
 fi
 
 # one argument
@@ -97,9 +103,17 @@ if [ $# -eq 1 ]; then
 fi
 
 # check validity of input files
-if ( ! ( [ -f "$QUERY_FA" ] && [ -f "$DATABASE_FA" ] && [ -r "$QUERY_FA" ] && [ -r "$DATABASE_FA" ] ) ); then
-  echo "ERROR: input files don't exist or are not readable" > /dev/stderr
+if [ ! -r ${QUERY_FA} ]; then
+  echo "ERROR: query file doesn't exist or not readable" > /dev/stderr
+  echo "-----------------------------------------------" > /dev/stderr
+  echo "$QUERY_FA"
+  usage
+  exit 127
+fi
+if [ ! -r "$DATABASE_FA" ]; then
+  echo "ERROR: database file doesn't exist or not readable" > /dev/stderr
   echo "--------------------------------------------------" > /dev/stderr
+  echo "$DATABASE_FA"
   usage
   exit 127
 fi
@@ -133,11 +147,36 @@ OUTDIR=$(readlink -f "${OUTDIR}")
 # catch interrupts and terms
 trap 'cleanup' 0 1 2 3 15
 
+# make sure required variables are set
+if [ "${MODPROFS}" == "" ]; then
+  echo "ERROR: MODPROFS variable not set but required" > /dev/stderr
+  echo "---------------------------------------------" > /dev/stderr
+  usage
+  exit 127
+fi
+
 # load all required functions
-. "${BENCHDIR}/src/*.sh"
+OLD_IFS=$IFS
+IFS='
+'
+for s in $(ls "${BENCHDIR}"/src/*.sh); do
+    . "${s}"
+done
+IFS=${OLD_IFS}
 
 # these are the modules
 MODULES=`ls ${BENCHDIR}/modules`
+
+if [ $DEBUG != "" ]; then
+    echo "# VARIABLES defined:"
+    echo "#  BENCHDIR       : ${BENCHDIR}"
+    echo "#  QUERY_FA       : ${QUERY_FA}"
+    echo "#  DATABASE_FA    : ${DATABASE_FA}"
+    echo "#  MODPROFS       : ${MODPROFS}"
+    echo "#  TMPDIR         : ${TMPDIR}"
+    echo "#  OUTDIR         : ${OUTDIR}"
+    echo "#  MODULES        : ${MODULES}"
+fi
 
 # deactivate dynamic cpu frequency scaling
 setCpuFreqFixed
@@ -146,12 +185,10 @@ setCpuFreqFixed
 create_indexes
 
 # # run the benchmark
-# run_benchmark
+run_benchmark
 #
 # # write report
 # create_report
 
 # reactivate dynamic cpu frequency scaling
 setCpuFreqOnDemand
-
-cleanup

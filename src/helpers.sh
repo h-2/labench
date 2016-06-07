@@ -8,10 +8,10 @@ max()
 {
     if ( [ $# -eq 1 ] || [ $1 -gt $2 ] ); then
         echo $1
-        return $1;
+#         return $1;
     fi
     echo $2
-    return $2;
+#     return $2;
 }
 
 

@@ -1,30 +1,32 @@
 #!/bin/sh
 
-create_indexes()
+run_benchmark()
 {
-    echo "Running Benchmark..."
-    echo "MODULE:PROFILE     MAXRAM       RUNTIME"
-    echo "---------------------------------------"
+    echo ""
+    echo "RUNNING BENCHMARK..."
+    echo "  PROFILE                     MAXRAM    RUNTIME"
+    echo "-------------------------------------------------"
 
     for MODPROF in ${MODPROFS}; do
 
         # get MODULE and PROFILE variables from MODPROF which is MODULE:PROFILE
-        MODULE=${MODPROF#*:}
+        MODULE=${MODPROF%%:*}
         if [ ! -d "${BENCHDIR}/modules/${MODULE}" ]; then
             echo "ERROR: Module ${MODULE} not found in ${BENCHDIR}/modules/"
             exit 100
         fi
-        if [ ! -x "${BENCHDIR}/modules/${MODULE}/labench.sh" ]; then
+        if [ ! -f "${BENCHDIR}/modules/${MODULE}/labench.sh" ]; then
             echo "ERROR: Module ${MODULE} does not contains script."
             exit 100
         fi
 
-        PROFILE=${MODPROF%%:*} # availability of PROFILE checked in module file
+        PROFILE=${MODPROF#*:} # availability of PROFILE checked in module file
 
         # default variables and functions if not overwritten
         BINDIR="${BENCHDIR}/modules/${MODULE}/bin"
         INDEXIDENT=${MODPROF}
-        LOGFILE="${OUTDIR}/createindex_${INDEXIDENT}.log"
+        LOGFILE="${OUTDIR}/run_${INDEXIDENT}.log"
+        OUTPUT="${TMPDIR}/SEARCH/${MODPROF}/output.m8"
         pre_search() { }
         post_search() { }
 
@@ -32,7 +34,7 @@ create_indexes()
         . "${BENCHDIR}/modules/${MODULE}/labench.sh"
         setupCommands
 
-        ### now the indexing begins
+        ### now the search begins
 
         if [ -d "${TMPDIR}/SEARCH/${MODPROF}" ]; then
             echo "ERROR: The target directory already exists!"
@@ -56,7 +58,7 @@ create_indexes()
         echo "" >> ${LOGFILE}
 
         # run the call and catch ram and runtime
-        ramtime=$(wrapper "${DO_SEARCH} >> ${LOGFILE} 2>&1" 4>&1)
+        ramtime=$(wrapper '${DO_SEARCH} >> ${LOGFILE} 2>&1' 4>&1)
         time=$(max 0 ${ramtime#*'
 '})
         ram=$(( $(max 0 ${ramtime%%'
@@ -71,7 +73,7 @@ create_indexes()
         # print diagnostics to stdout
         printf "${MODPROF}"
         fill_up_whitespace "${MODPROF}"
-        echo "${ram}\t${time}"
+        printf "${ram}\t${time}\n"
 
     done
 }

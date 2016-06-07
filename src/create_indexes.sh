@@ -2,35 +2,37 @@
 
 create_indexes()
 {
+    echo ""
     echo "CREATING INDEXES..."
-    echo "INDEXIDENT     MAXRAM       RUNTIME"
-    echo "-----------------------------------"
+    echo "  INDEXIDENT                 MAXRAM    RUNTIME"
+    echo "-------------------------------------------------"
 
     for MODPROF in ${MODPROFS}; do
 
         # get MODULE and PROFILE variables from MODPROF which is MODULE:PROFILE
-        MODULE=${MODPROF#*:}
+        MODULE=${MODPROF%%:*}
         if [ ! -d "${BENCHDIR}/modules/${MODULE}" ]; then
             echo "ERROR: Module ${MODULE} not found in ${BENCHDIR}/modules/"
             exit 100
         fi
-        if [ ! -x "${BENCHDIR}/modules/${MODULE}/labench.sh" ]; then
-            echo "ERROR: Module ${MODULE} does not contains script."
+        if [ ! -f "${BENCHDIR}/modules/${MODULE}/labench.sh" ]; then
+            echo "ERROR: Module ${MODULE} does not contain script."
             exit 100
         fi
 
-        PROFILE=${MODPROF%%:*} # availability of PROFILE checked in module file
+        PROFILE=${MODPROF#*:} # availability of PROFILE checked in module file
 
         # default variables and functions if not overwritten
         BINDIR="${BENCHDIR}/modules/${MODULE}/bin"
         INDEXIDENT=${MODPROF}
         LOGFILE="${OUTDIR}/createindex_${INDEXIDENT}.log"
+        OUTPUT=""
         pre_index() { }
         post_index() { }
 
         # load module and profile
         . "${BENCHDIR}/modules/${MODULE}/labench.sh"
-        setIndexCommands
+        setupCommands
 
         ### now the indexing begins
 
@@ -53,7 +55,7 @@ create_indexes()
         echo "" >> ${LOGFILE}
 
         # run the call and catch ram and runtime
-        ramtime=$(wrapper "${DO_INDEX_DB} >> ${LOGFILE} 2>&1" 4>&1)
+        ramtime=$(wrapper '${DO_INDEX_DB} >> ${LOGFILE} 2>&1' 4>&1)
         time=$(max 0 ${ramtime#*'
 '})
         ram=$(( $(max 0 ${ramtime%%'
@@ -68,7 +70,7 @@ create_indexes()
         # print diagnostics to stdout
         printf "${INDEXIDENT}"
         fill_up_whitespace "${INDEXIDENT}"
-        echo "${ram}\t${time}"
+        printf "${ram}\t${time}\n"
 
     done
 }
