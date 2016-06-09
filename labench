@@ -48,7 +48,11 @@ usage()
 
 cleanup()
 {
-    rm -r "${TMPDIR}"
+    if [ $DEBUG != "" ]; then
+        echo "YOU ARE IN DEBUG MODE SO ${TMPDIR} was not cleaned up!"
+    else
+        rm -r "${TMPDIR}"
+    fi
 }
 
 # exit whenever a simple command returns non-zero

@@ -22,42 +22,109 @@
 #     return $2;
 # }
 
-## get child processes recursively
-getChildren()
-{
-    echo $1
-    pgrep -P $1 | while read -r line; do getChildren $line; done
-    return $?
-}
 
-wrapper()
-{
-    t=`date +%s`
+#defines a function wrapper() that expects a command and a log file as parameters
 
-    CMD="$1 &"
 
-#     echo $CMD
 
-    eval $CMD
-    mPID=$!
-    maxRAM=0
+case $(uname -s) in
+    "Linux")
+        if [ $RECURSIVE_TRACK != "" ]; then
 
-    # echo "mPID = $mPID" >/dev/stderr
-    if [ $(uname -s) = "Linux" ]; then
-        while [ -d /proc/$mPID ]; do
-            sumRAM=$(getChildren $mPID | while read -r line; \
-        do awk ' $1 == "VmRSS:" { print $2; exit }' "/proc/$line/status" 2>/dev/null;\
-        done | awk '{ SUM = SUM + $1 }; END { print SUM };')
-            maxRAM=$(max $maxRAM $sumRAM)
-        #     echo "maxRAM = $maxRAM  sumRAM = $sumRAM"
-            sleep 0.3
-        done
-    else
-        wait $mPID
-    fi
+            ## get child processes recursively
+            getChildren()
+            {
+                echo $1
+                pgrep -P $1 | while read -r line; do getChildren $line; done
+                return $?
+            }
+            wrapper()
+            {
+                [ $# -eq 2 ] || exit $(echo $? && echo "ERROR: Wrong number or args to wrapper (two expected)." > /dev/stderr)
+                time=$(date +%s)
 
-    t=$((`date +%s`-t))
+                CMD="$1 2>&1 > $2 &"
 
-    echo $maxRAM >&4
-    echo $t >&4
-}
+            #     echo $CMD
+
+                eval $CMD
+                mPID=$!
+                ram=0
+
+                # echo "mPID = $mPID" >/dev/stderr
+                while [ -d /proc/$mPID ]; do
+                    sumRAM=$(getChildren $mPID | while read -r line; \
+                do awk ' $1 == "VmRSS:" { print $2; exit }' "/proc/$line/status" 2>/dev/null;\
+                done | awk '{ SUM = SUM + $1 }; END { print SUM };')
+                    ram=$(max $ram $sumRAM)
+                #     echo "ram = $ram  sumRAM = $sumRAM"
+                    sleep 0.3
+                done
+
+                time=$((`date +%s`-time))
+
+#                 echo $ram
+#                 echo $t
+            }
+        else
+            wrapper()
+            {
+                [ $# -eq 2 ] || exit $(echo $? && echo "ERROR: Wrong number or args to wrapper (two expected)." > /dev/stderr)
+
+                # prefix with command to get ram
+                CMD="/usr/bin/time -f '%E\n%M'  -o \"${TMPDIR}/_time\" $1 2>&1 > $2"
+                ram=0
+                time=$(date +%s)
+
+                eval $CMD
+
+                time=$(($(date +%s)-time))
+
+                # ram is in kilobytes, transform to megabyts
+                ram=$(($(cat "${TMPDIR}/_time") / 1024))
+                : ${ram:=0} # ensure numeric value
+                rm "${TMPDIR}/_time"
+
+#                 echo $ram
+#                 echo $t
+            }
+        fi
+        ;;
+    "FreeBSD" | "Darwin")
+        wrapper()
+        {
+            [ $# -eq 2 ] || exit $(echo $? && echo "ERROR: Wrong number or args to wrapper (two expected)." > /dev/stderr)
+            # prefix with command to get ram
+            CMD="/usr/bin/time -l $1 2>&1 > ${TMPDIR}/_time 2>&1 > $2"
+            ram=0
+            time=$(date +%s)
+
+            eval $CMD
+
+            time=$(($(date +%s)-time))
+
+            # ram is in kilobytes, transform to megabyts
+            ram=$(($(grep "maximum resident set size" "${TMPDIR}/_time" | awk '{print $1}') / 1024))
+            : ${ram:=0} # ensure numeric value
+            rm "${TMPDIR}/_time"
+
+#             echo $ram
+#             echo $t
+        }
+        ;;
+    *)
+        # for unknown OS, just track time
+        wrapper()
+        {
+            CMD="$1 2>&1 > $2"
+            ram=0
+            time=$(date +%s)
+
+            eval $CMD
+
+            time=$(($(date +%s)-time))
+
+#             echo $time
+#             echo 0
+        }
+esac

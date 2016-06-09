@@ -58,11 +58,8 @@ run_benchmark()
         echo "" >> ${LOGFILE}
 
         # run the call and catch ram and runtime
-        ramtime=$(wrapper '${DO_SEARCH} >> ${LOGFILE} 2>&1' 4>&1)
-        time=$(max 0 ${ramtime#*'
-'})
-        ram=$(( $(max 0 ${ramtime%%'
-'*})  / 1024 ))
+        wrapper '${DO_SEARCH}' '${LOGFILE}'
+        # function set global time and ram variables
 
         echo "* total time spent:\t${time}s" >> ${LOGFILE}
         echo "* max RAM used:\t${ram}KiB" >> ${LOGFILE}
