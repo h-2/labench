@@ -48,7 +48,7 @@ usage()
 
 cleanup()
 {
-    if [ $DEBUG != "" ]; then
+    if [ -z "$DEBUG" ]; then
         echo "YOU ARE IN DEBUG MODE SO ${TMPDIR} was not cleaned up!"
     else
         rm -r "${TMPDIR}"
@@ -152,7 +152,7 @@ OUTDIR=$(readlink -f "${OUTDIR}")
 trap 'cleanup' 0 1 2 3 15
 
 # make sure required variables are set
-if [ "${MODPROFS}" == "" ]; then
+if [ ! -z "${MODPROFS}" ]; then
   echo "ERROR: MODPROFS variable not set but required" > /dev/stderr
   echo "---------------------------------------------" > /dev/stderr
   usage
@@ -171,7 +171,7 @@ IFS=${OLD_IFS}
 # these are the modules
 MODULES=`ls ${BENCHDIR}/modules`
 
-if [ $DEBUG != "" ]; then
+if [ -z "$DEBUG" ]; then
     echo "# VARIABLES defined:"
     echo "#  BENCHDIR       : ${BENCHDIR}"
     echo "#  QUERY_FA       : ${QUERY_FA}"

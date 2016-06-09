@@ -29,7 +29,7 @@
 
 case $(uname -s) in
     "Linux")
-        if [ $RECURSIVE_TRACK != "" ]; then
+        if [ -z "$RECURSIVE_TRACK" ]; then
 
             ## get child processes recursively
             getChildren()
