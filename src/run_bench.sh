@@ -27,8 +27,10 @@ run_benchmark()
         INDEXIDENT=${MODPROF}
         LOGFILE="${OUTDIR}/run_${INDEXIDENT}.log"
         OUTPUT="${TMPDIR}/SEARCH/${MODPROF}/output.m8"
-        pre_search() { }
-        post_search() { }
+        pre_search() { :
+        }
+        post_search() { :
+        }
 
         # load module and profile
         . "${BENCHDIR}/modules/${MODULE}/labench.sh"

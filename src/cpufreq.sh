@@ -47,8 +47,10 @@ if [ $RET -eq 0 ]; then # there were no problems
         done
     }
 else
-    setCpuFreqFixed() { }
-    setCpuFreqOnDemand() { }
+    setCpuFreqFixed() { :
+    }
+    setCpuFreqOnDemand() { :
+    }
 fi
 
 set -e

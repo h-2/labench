@@ -27,8 +27,10 @@ create_indexes()
         INDEXIDENT=${MODPROF}
         LOGFILE="${OUTDIR}/createindex_${INDEXIDENT}.log"
         OUTPUT=""
-        pre_index() { }
-        post_index() { }
+        pre_index() { :
+        }
+        post_index() { :
+        }
 
         # load module and profile
         . "${BENCHDIR}/modules/${MODULE}/labench.sh"
