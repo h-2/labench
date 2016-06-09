@@ -50,7 +50,8 @@ setupCommands()
 #     {
 #     }
 
-    BASECMD="${BINDIR}/rapsearch -q query.fasta -d ${TMPDIR}/INDEX/${INDEXIDENT}/db -o ${OUTPUT}
+    # need to remove .m8 from file, because rapsearch always adds it
+    BASECMD="${BINDIR}/rapsearch -q query.fasta -d ${TMPDIR}/INDEX/${INDEXIDENT}/db -o ${OUTPUT%???}
            -z ${NCPU}
            -e $(echo ${EVALUE} | awk '{ print log($0)/log(10) }')
            -v ${MAXDBENTRIES} -b 0"

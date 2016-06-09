@@ -29,7 +29,7 @@
 
 case $(uname -s) in
     "Linux")
-        if [ -z ${RECURSIVE_TRACK+x} ]; then
+        if [ -n ${RECURSIVE_TRACK+x} ]; then
 
             ## get child processes recursively
             getChildren()
@@ -60,7 +60,7 @@ case $(uname -s) in
                 #     echo "ram = $ram  sumRAM = $sumRAM"
                     sleep 0.3
                 done
-
+                ram=$((ram / 1024))
                 time=$((`date +%s`-time))
 
 #                 echo $ram
