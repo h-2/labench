@@ -29,7 +29,7 @@
 
 case $(uname -s) in
     "Linux")
-        if [ -n ${RECURSIVE_TRACK:+x} ]; then
+        if [ ${RECURSIVE_TRACK:+x} ]; then
 
             ## get child processes recursively
             getChildren()
@@ -40,6 +40,7 @@ case $(uname -s) in
             }
             wrapper()
             {
+                ##TODO still something wrong with this one
                 [ $# -eq 2 ] || exit $(echo $? && echo "ERROR: Wrong number or args to wrapper (two expected)." > /dev/stderr)
                 time=$(date +%s)
 

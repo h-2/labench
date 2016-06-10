@@ -48,7 +48,7 @@ usage()
 
 cleanup()
 {
-    if [ -n ${DEBUG:+x} ]; then
+    if [ ${DEBUG:+x} ]; then
         echo "YOU ARE IN DEBUG MODE SO ${TMPDIR} was not cleaned up!"
     else
         rm -r "${TMPDIR}"
@@ -171,7 +171,7 @@ IFS=${OLD_IFS}
 # these are the modules
 MODULES=`ls ${BENCHDIR}/modules`
 
-if [ -n ${DEBUG:+x} ]; then
+if [ ${DEBUG:+x} ]; then
     echo "# VARIABLES defined:"
     echo "#  BENCHDIR       : ${BENCHDIR}"
     echo "#  QUERY_FA       : ${QUERY_FA}"
