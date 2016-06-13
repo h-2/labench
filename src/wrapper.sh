@@ -96,7 +96,7 @@ case $(uname -s) in
         {
             [ $# -eq 2 ] || exit $(echo $? && echo "ERROR: Wrong number or args to wrapper (two expected)." > /dev/stderr)
             # prefix with command to get ram
-            CMD="/usr/bin/time -l $1 2>&1 > ${TMPDIR}/_time 2>&1 > $2"
+            CMD="{ /usr/bin/time -l $1 2>&1; } | tee $2 | tail -n 20 > ${TMPDIR}/_time"
             ram=0
             time=$(date +%s)
 

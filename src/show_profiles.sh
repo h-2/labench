@@ -8,7 +8,7 @@ show_profiles()
 
         for MODULE in $(ls "${BENCHDIR}/modules/"); do
 
-            if [ ! -f "${BENCHDIR}/modules/${MODULE}/labench.sh" ]; then
+            if [ ! -f "${BENCHDIR}/modules/${MODULE}/labench_${PROGRAMMODE}.sh" ]; then
                 echo "ERROR: Module ${MODULE} does not contain a script."
 #                 exit 100
                 continue
@@ -16,8 +16,7 @@ show_profiles()
 
             # load module
             PROFILES=""
-            . "${BENCHDIR}/modules/${MODULE}/labench.sh"
-            getProfiles
+            . "${BENCHDIR}/modules/${MODULE}/labench_${PROGRAMMODE}.sh"
             echo "${MODULE}: ${PROFILES}"
         done
         echo ""

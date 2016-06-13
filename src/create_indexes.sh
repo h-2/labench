@@ -4,8 +4,10 @@ create_indexes()
 {
     echo ""
     echo "CREATING INDEXES..."
-    echo "  INDEXIDENT                 MAXRAM    RUNTIME"
-    echo "-------------------------------------------------"
+    echo ""
+    echo ".--------------------------.---------------.--------------.------------."
+    echo "|             MODULE       |      PROFILE  |     RAM [MB] |   TIME [s] |"
+    echo "|--------------------------+---------------+--------------+------------|"
 
     for MODPROF in ${MODPROFS}; do
 
@@ -15,7 +17,7 @@ create_indexes()
             echo "ERROR: Module ${MODULE} not found in ${BENCHDIR}/modules/"
             exit 100
         fi
-        if [ ! -f "${BENCHDIR}/modules/${MODULE}/labench.sh" ]; then
+        if [ ! -f "${BENCHDIR}/modules/${MODULE}/labench_${PROGRAMMODE}.sh" ]; then
             echo "ERROR: Module ${MODULE} does not contain script."
             exit 100
         fi
@@ -24,8 +26,8 @@ create_indexes()
 
         # default variables and functions if not overwritten
         BINDIR="${BENCHDIR}/modules/${MODULE}/bin"
-        INDEXIDENT=${MODPROF}
-        LOGFILE="${OUTDIR}/createindex_${INDEXIDENT}.log"
+        INDEXIDENT=${PROFILE}
+        LOGFILE="${OUTDIR}/createindex_${MODULE}:${INDEXIDENT}.log"
         OUTPUT=""
         pre_index() { :
         }
@@ -33,17 +35,17 @@ create_indexes()
         }
 
         # load module and profile
-        . "${BENCHDIR}/modules/${MODULE}/labench.sh"
+        . "${BENCHDIR}/modules/${MODULE}/labench_${PROGRAMMODE}.sh"
         setupCommands
 
         ### now the indexing begins
 
         # if an index for this INDEXIDENT already exists, skip
-        [ -d "${TMPDIR}/${INDEXIDENT}" ] && continue
+        [ -d "${TMPDIR}/INDEX/${MODULE}:${INDEXIDENT}" ] && continue
 
         # prepare directory and change CWD
-        mkdir -p "${TMPDIR}/INDEX/${INDEXIDENT}"
-        cd "${TMPDIR}/INDEX/${INDEXIDENT}"
+        mkdir -p "${TMPDIR}/INDEX/${MODULE}:${INDEXIDENT}"
+        cd "${TMPDIR}/INDEX/${MODULE}:${INDEXIDENT}"
         ln -s "${DATABASE_FA}" db.fasta
 
         # run a module's custom preperation function if set
@@ -67,9 +69,9 @@ create_indexes()
         post_index || exit $(echo $? && echo "Error in ${INDEXIDENT}'s post-processing" > /dev/stderr)
 
         # print diagnostics to stdout
-        printf "${INDEXIDENT}"
-        fill_up_whitespace "${INDEXIDENT}"
-        printf "${ram}\t${time}\n"
+        printf '|%25s |%14s |%13s |%11s |\n' ${MODULE} ${INDEXIDENT} ${ram} ${time}
 
     done
+    echo "'--------------------------'---------------'--------------'------------'"
+    echo ""
 }

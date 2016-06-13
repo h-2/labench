@@ -7,6 +7,16 @@
 #   see https://github.com/h-2/labench for more details
 #
 
+# sanatize environment so all tools behave correctly
+unset LC_ALL
+unset LANG
+LC_CTYPE="C"
+LC_COLLATE="C"
+LC_TIME="C"
+LC_NUMERIC="C"
+LC_MONETARY="C"
+LC_MESSAGES="C"
+
 usage()
 {
     echo "labench -- the Local Aligner BENCHmark"
@@ -147,6 +157,8 @@ done
 QUERY_FA=$(readlink -f "${QUERY_FA}")
 DATABASE_FA=$(readlink -f "${DATABASE_FA}")
 OUTDIR=$(readlink -f "${OUTDIR}")
+EVALUE_ACTUAL=$(echo $EVALUE | awk ' {print $1 * 100}') # make sure that initial cutoff is more lenient
+PROGRAMMODE=$(echo "$PROGRAMMODE" | tr '[:upper:]' '[:lower:]')
 
 # catch interrupts and terms
 trap 'cleanup' 0 1 2 3 15
@@ -158,6 +170,16 @@ if [ -z ${MODPROFS:+x} ]; then
   usage
   exit 127
 fi
+case $PROGRAMMODE in
+    "blastn" | "blastp" | "blastx" | "tblastn" | "tblastx" )
+        ;;
+    * )
+        echo "ERROR: PROGRAMMODE variable not set or set falsely " > /dev/stderr
+        echo "---------------------------------------------------" > /dev/stderr
+        usage
+        exit 127
+        ;;
+esac
 
 # load all required functions
 OLD_IFS=$IFS
@@ -180,6 +202,8 @@ if [ ${DEBUG:+x} ]; then
     echo "#  TMPDIR         : ${TMPDIR}"
     echo "#  OUTDIR         : ${OUTDIR}"
     echo "#  MODULES        : ${MODULES}"
+    echo "#  EVALUE         : ${EVALUE}"
+    echo "#  MAXDBENTRIES   : ${MAXDBENTRIES}"
 fi
 
 # deactivate dynamic cpu frequency scaling
@@ -192,7 +216,7 @@ create_indexes
 run_benchmark
 #
 # # write report
-# create_report
+create_report
 
 # reactivate dynamic cpu frequency scaling
 setCpuFreqOnDemand

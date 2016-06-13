@@ -4,8 +4,10 @@ run_benchmark()
 {
     echo ""
     echo "RUNNING BENCHMARK..."
-    echo "  PROFILE                     MAXRAM    RUNTIME"
-    echo "-------------------------------------------------"
+    echo ""
+    echo ".--------------------------.---------------.--------------.------------."
+    echo "|             MODULE       |      PROFILE  |     RAM [MB] |   TIME [s] |"
+    echo "|--------------------------+---------------+--------------+------------|"
 
     for MODPROF in ${MODPROFS}; do
 
@@ -15,7 +17,7 @@ run_benchmark()
             echo "ERROR: Module ${MODULE} not found in ${BENCHDIR}/modules/"
             exit 100
         fi
-        if [ ! -f "${BENCHDIR}/modules/${MODULE}/labench.sh" ]; then
+        if [ ! -f "${BENCHDIR}/modules/${MODULE}/labench_${PROGRAMMODE}.sh" ]; then
             echo "ERROR: Module ${MODULE} does not contains script."
             exit 100
         fi
@@ -24,8 +26,8 @@ run_benchmark()
 
         # default variables and functions if not overwritten
         BINDIR="${BENCHDIR}/modules/${MODULE}/bin"
-        INDEXIDENT=${MODPROF}
-        LOGFILE="${OUTDIR}/run_${INDEXIDENT}.log"
+        INDEXIDENT=${PROFILE}
+        LOGFILE="${OUTDIR}/run_${MODPROF}.log"
         OUTPUT="${TMPDIR}/SEARCH/${MODPROF}/output.m8"
         pre_search() { :
         }
@@ -33,7 +35,7 @@ run_benchmark()
         }
 
         # load module and profile
-        . "${BENCHDIR}/modules/${MODULE}/labench.sh"
+        . "${BENCHDIR}/modules/${MODULE}/labench_${PROGRAMMODE}.sh"
         setupCommands
 
         ### now the search begins
@@ -68,11 +70,14 @@ run_benchmark()
         echo "" >> ${LOGFILE}
 
         post_search|| exit $(echo $? && echo "Error in ${MODPROF}'s post-processing" > /dev/stderr)
+        # compress
+        gzip "${OUTPUT}"
 
         # print diagnostics to stdout
-        printf "${MODPROF}"
-        fill_up_whitespace "${MODPROF}"
-        printf "${ram}\t${time}\n"
+        printf '|%25s |%14s |%13s |%11s |\n' ${MODULE} ${PROFILE} ${ram} ${time}
 
     done
+
+    echo "'--------------------------'---------------'--------------'------------'"
+    echo ""
 }

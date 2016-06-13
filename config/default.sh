@@ -11,12 +11,11 @@ TMPDIR=${TMPDIR-"/tmp"}
 # outdir
 OUTDIR=${OUTDIR-"${TMPDIR}/labench"}
 
+# programmode
+PROGRAMMODE=${PROGRAMMODE-"blastx"}
+
 # e-value cut off
 EVALUE=${EVALUE-0.1}
-
-#bitscore cut-off that is applied as postproc
-MINBITS=${MINBITS-48.2798}
-# MINBITS=10
 
 # maximum number of hits per query sequence
 MAXDBENTRIES=${MAXDBENTRIES-256}

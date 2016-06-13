@@ -6,14 +6,21 @@
 ## maximum of two values. also works if one value is blank (i.e. only one arg)
 max()
 {
-    if ( [ $# -eq 1 ] || [ $1 -gt $2 ] ); then
+    if ( [ $# -eq 1 ] || [ $(echo "$1 > $2" | bc) -eq 1 ] ); then
         echo $1
-#         return $1;
+    else
+        echo $2
     fi
-    echo $2
-#     return $2;
 }
 
+min()
+{
+    if ( [ $# -eq 1 ] || [ $(echo "$1 < $2" | bc) -eq 1 ] ); then
+        echo $1
+    else
+        echo $2
+    fi
+}
 
 ############# FILE FORMAT PROCESSING #####################
 
@@ -193,8 +200,8 @@ END {
 fill_up_whitespace()
 {
     lenname=$(echo -n "$1" | wc -c)
-    if [ $lenname -lt 28 ]; then
-        for i in $(seq $lenname 1 30); do printf ' '; done
+    if [ $lenname -lt 34 ]; then
+        for i in $(seq $lenname 1 36); do printf ' '; done
     else
         printf "  "
     fi
