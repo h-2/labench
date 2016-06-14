@@ -84,9 +84,9 @@ create_report()
     printf "\t# total"      >> "${OUTDIR}/report.tab"
     printf "\t# pairs"      >> "${OUTDIR}/report.tab"
     printf "\t# best"       >> "${OUTDIR}/report.tab"
-    printf "\tbitScore Q1"  >> "${OUTDIR}/report.tab"
-    printf "\tbitScore MED" >> "${OUTDIR}/report.tab"
-    printf "\tbitScore Q3"  >> "${OUTDIR}/report.tab"
+    printf "\tbits Q1"      >> "${OUTDIR}/report.tab"
+    printf "\tbits MED"     >> "${OUTDIR}/report.tab"
+    printf "\tbits Q3"      >> "${OUTDIR}/report.tab"
     printf "\n"             >> "${OUTDIR}/report.tab"
 
     for MODPROF in ${MODPROFS}; do

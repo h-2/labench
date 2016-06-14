@@ -84,7 +84,7 @@ run_benchmark()
         # print diagnostics to stdout
 #         printf '|%25s |%14s |%13s |%11s |\n' ${MODULE} ${PROFILE} ${ram} ${time}
         printf "${MODULE}"          >> "${OUTDIR}/perf_search.tab"
-        printf "\t${INDEXIDENT}"    >> "${OUTDIR}/perf_search.tab"
+        printf "\t${PROFILE}"       >> "${OUTDIR}/perf_search.tab"
         printf "\t${ram}"           >> "${OUTDIR}/perf_search.tab"
         printf "\t${time}"          >> "${OUTDIR}/perf_search.tab"
         printf "\n"                 >> "${OUTDIR}/perf_search.tab"
