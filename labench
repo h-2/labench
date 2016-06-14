@@ -7,18 +7,25 @@
 #   see https://github.com/h-2/labench for more details
 #
 
-
-# see if we support UTF8 before sanitizing
-getCharmap
-# sanatize environment so all tools behave correctly
-unset LC_ALL
-unset LANG
-LC_CTYPE="C"
-LC_COLLATE="C"
-LC_TIME="C"
-LC_NUMERIC="C"
-LC_MONETARY="C"
-LC_MESSAGES="C"
+getCharmap()
+{
+    case $(uname) in
+        "Darwin")
+            CHARMAP=notutf8
+            ;;
+        "FreeBSD")
+            #depends on version
+            if [ $(uname -r | awk -F\\. '{ print$1 }') -lt 11 ]; then
+                CHARMAP=notutf8
+            else
+                CHARMAP=$(locale charmap)
+            fi
+            ;;
+        * )
+            CHARMAP=$(locale charmap)
+            ;;
+    esac
+}
 
 usage()
 {
@@ -74,6 +81,19 @@ set -e
 # error when reading from an undefined variable
 set -u
 
+# see if we support UTF8 before sanitizing
+getCharmap
+# sanatize environment so all tools behave correctly
+unset LC_ALL
+unset LANG
+LC_CTYPE="C"
+LC_COLLATE="C"
+LC_TIME="C"
+LC_NUMERIC="C"
+LC_MONETARY="C"
+LC_MESSAGES="C"
+
+# check number of args
 if [ $# -gt 2 ]; then
     echo "ERROR: wrong number of arguments" > /dev/stderr
     echo "--------------------------------" > /dev/stderr

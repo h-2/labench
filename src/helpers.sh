@@ -22,27 +22,6 @@ min()
     fi
 }
 
-
-getCharmap()
-{
-    case $(uname) in
-        "Darwin")
-            CHARMAP=notutf8
-            ;;
-        "FreeBSD")
-            #depends on version
-            if [ $(uname -r | awk -F\\. '{ print$1 }') -lt 11 ]; then
-                CHARMAP=notutf8
-            else
-                CHARMAP=$(locale charmap)
-            fi
-            ;;
-        * )
-            CHARMAP=$(locale charmap)
-            ;;
-    esac
-}
-
 pretty_print2() # INPUTFILE
 {
     numcols=$(awk -F\\t '
