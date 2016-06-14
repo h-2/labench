@@ -21,7 +21,7 @@ setupCommands()
     esac
 
     BASECMD="${BINDIR}/diamond blastx --query ${QUERY_FA} --db ${TMPDIR}/INDEX/${MODULE}:${INDEXIDENT}/db
-             -a matches --threads ${NCPU} --max-target-seqs ${MAXDBENTRIES} --evalue ${EVALUE_ACTUAL}
+             -o ${OUTPUT} --threads ${NCPU} --max-target-seqs ${MAXDBENTRIES} --evalue ${EVALUE_ACTUAL}
              --tmpdir ${TMPDIR}"
 
     case $PROFILE in
@@ -36,11 +36,5 @@ setupCommands()
             exit 100
             ;;
     esac
-
-    post_search()
-    {
-        # convert diamond format to blast
-        ${BINDIR}/diamond view -a matches.daa -o ${OUTPUT} 2>&1 > /dev/null
-    }
 
 }
