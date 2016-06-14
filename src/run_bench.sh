@@ -5,9 +5,17 @@ run_benchmark()
     echo ""
     echo "RUNNING BENCHMARK..."
     echo ""
-    echo ".--------------------------.---------------.--------------.------------."
-    echo "|             MODULE       |      PROFILE  |     RAM [MB] |   TIME [s] |"
-    echo "|--------------------------+---------------+--------------+------------|"
+#     echo ".--------------------------.---------------.--------------.------------."
+#     echo "|             MODULE       |      PROFILE  |     RAM [MB] |   TIME [s] |"
+#     echo "|--------------------------+---------------+--------------+------------|"
+
+    # HEADERS split over lines for readability:
+    : > "${OUTDIR}/perf_search.tab"
+    printf "MODULE"          >> "${OUTDIR}/perf_search.tab"
+    printf "\tPROFILE"       >> "${OUTDIR}/perf_search.tab"
+    printf "\tRAM [MB]"      >> "${OUTDIR}/perf_search.tab"
+    printf "\tTIME [s]"      >> "${OUTDIR}/perf_search.tab"
+    printf "\n"              >> "${OUTDIR}/perf_search.tab"
 
     for MODPROF in ${MODPROFS}; do
 
@@ -74,10 +82,15 @@ run_benchmark()
         gzip "${OUTPUT}"
 
         # print diagnostics to stdout
-        printf '|%25s |%14s |%13s |%11s |\n' ${MODULE} ${PROFILE} ${ram} ${time}
+#         printf '|%25s |%14s |%13s |%11s |\n' ${MODULE} ${PROFILE} ${ram} ${time}
+        printf "${MODULE}"          >> "${OUTDIR}/perf_search.tab"
+        printf "\t${INDEXIDENT}"    >> "${OUTDIR}/perf_search.tab"
+        printf "\t${ram}"           >> "${OUTDIR}/perf_search.tab"
+        printf "\t${time}"          >> "${OUTDIR}/perf_search.tab"
+        printf "\n"                 >> "${OUTDIR}/perf_search.tab"
 
     done
 
-    echo "'--------------------------'---------------'--------------'------------'"
+    pretty_print2 "${OUTDIR}/perf_search.tab"
     echo ""
 }

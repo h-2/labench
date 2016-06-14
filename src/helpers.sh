@@ -22,84 +22,215 @@ min()
     fi
 }
 
+
+getCharmap()
+{
+    case $(uname) in
+        "Darwin")
+            CHARMAP=notutf8
+            ;;
+        "FreeBSD")
+            #depends on version
+            if [ $(uname -r | awk -F\\. '{ print$1 }') -lt 11 ]; then
+                CHARMAP=notutf8
+            else
+                CHARMAP=$(locale charmap)
+            fi
+            ;;
+        * )
+            CHARMAP=$(locale charmap)
+            ;;
+    esac
+}
+
+pretty_print2() # INPUTFILE
+{
+    numcols=$(awk -F\\t '
+    NF > maxColumns { maxColumns = NF};
+    END { printf maxColumns }' ${1} )
+
+    colwidths=$(awk -F\\t '
+    {
+        for (i=1; i<=NF; i++)
+            if (w[i] < length($i))
+                w[i] = length($i)
+    };
+    END {
+        for (i=1; i<=length(w); i++)
+            printf w[i] "|"
+    }' ${1} )
+
+    CHARMAP=${CHARMAP-$(locale charmap)}
+
+    awk -F\\t -v cols="${numcols}" -v widths="${colwidths}" -v charmap="${CHARMAP}" '
+    BEGIN {
+        split(widths, w, "|")
+
+        if (charmap == "UTF-8")
+        {
+            hChar = "─"
+            vChar = "│"
+
+            clChar = "├"
+            ccChar = "┼"
+            crChar = "┤"
+
+            tlChar = "┌"
+            tcChar = "┬"
+            trChar = "┐"
+
+            blChar = "└"
+            bcChar = "┴"
+            brChar = "┘"
+        } else
+        {
+            hChar = "-"
+            vChar = "|"
+
+            clChar = "|"
+            ccChar = "+"
+            crChar = "|"
+
+            tlChar = "."
+            tcChar = "."
+            trChar = "."
+
+            blChar = "'"'"'"
+            bcChar = "'"'"'"
+            brChar = "'"'"'"
+        }
+
+        printf tlChar
+        for (i=1; i <= cols; i++)
+        {
+            for (j=1; j <= (w[i]+2); j++)
+                printf hChar
+            if (i == cols)
+                printf trChar
+            else
+                printf tcChar
+        }
+        printf "\n"
+    }
+    {
+        printf vChar
+        for (i=1; i <= cols; i++)
+        {
+            printf " %" w[i] "s " vChar, $i
+        }
+        printf "\n"
+    }
+    NR == 1 {
+        for (i=1; i <= cols; i++)
+        {
+            printf clChar
+            for (i=1; i <= cols; i++)
+            {
+                for (j=1; j <= (w[i]+2); j++)
+                    printf hChar
+                if (i == cols)
+                    printf crChar
+                else
+                    printf ccChar
+            }
+            printf "\n"
+        }
+    }
+    END {
+        printf blChar
+        for (i=1; i <= cols; i++)
+        {
+            for (j=1; j <= (w[i]+2); j++)
+                printf hChar
+            if (i == cols)
+                printf brChar
+            else
+                printf bcChar
+        }
+        printf "\n"
+    }
+    ' ${1}
+}
+
+
 ############# FILE FORMAT PROCESSING #####################
 
 ## filters a tabular format blast output file to contain only the best hit (by 
 ## evalue) per query sequence. using to sort and uniq is too slow and error
 ## prone (bad handling of scientific format floats &c)
-blast_tabular2uniq_blast_tabular() # INPUT OUTPUT
-{
-    if [ $# -ne 2 ]; then
-        echo "ERROR: wrong number of args passed to uniq_hits_blast_tabular()"
-        exit 127
-    fi
-    awk -F\\t '
-    $0 ~ /^ *$/ { next };
-    $0 ~ /^ *#/ { print $0; next };
-    (e[$1] > $11) || (e[$1]==0) {
-        e[$1] = $11;
-        s[$1] = $0;
-    };
-    END {
-        for (i in s)
-            print s[i];
-    };' "$1" > "$2"
-    return $?
-}
-
-blast_flat2blast_tabular() # INPUT OUTPUT
-{
-    awk '
-    $1 == "Query=" {
-        qry = $2
-    };
-
-    substr($1,1,1) == ">" {
-        if (subj != "")
-            print qry "\t" subj "\t" pI "\t-1\t-1\t-1\t" qStart "\t" qEnd "\t" sStart "\t" sEnd "\t" eval "\t" bits;
-    
-    subj = substr($1,2)
-    qStart = 0;
-    sStart = 0;
-    };
-
-    ($1 == "Score") {
-        bits = $3
-        eval = $8
-    };
-
-    ($1 == "Identities") {
-        pI = substr($4,2,length($4)-4)
-    }; 
-
-    ($1 == "Query:") {
-        if (qStart == 0)
-            qStart = $2
-        qEnd = $4
-    };
-
-    ($1 == "Sbjct:") {
-        if (sStart == 0)
-            sStart = $2
-        sEnd = $4
-    }; ' "$1" > "$2"
-    return $?
-}
-
-
-filter_blast_tabular_eval() # INPUT OUTPUT EVALUE
-{
-    awk -F\\t ' $11 < '$3 "$1" > "$2"
-    return $?
-}
-
-## COUNTING FUNCTIONS
-
-total_hits_blast_tabular() # INPUT
-{
-    grep -v -E '(^$|^ *#)' -c "$1"
-    return $?
-}
+# blast_tabular2uniq_blast_tabular() # INPUT OUTPUT
+# {
+#     if [ $# -ne 2 ]; then
+#         echo "ERROR: wrong number of args passed to uniq_hits_blast_tabular()"
+#         exit 127
+#     fi
+#     awk -F\\t '
+#     $0 ~ /^ *$/ { next };
+#     $0 ~ /^ *#/ { print $0; next };
+#     (e[$1] > $11) || (e[$1]==0) {
+#         e[$1] = $11;
+#         s[$1] = $0;
+#     };
+#     END {
+#         for (i in s)
+#             print s[i];
+#     };' "$1" > "$2"
+#     return $?
+# }
+#
+# blast_flat2blast_tabular() # INPUT OUTPUT
+# {
+#     awk '
+#     $1 == "Query=" {
+#         qry = $2
+#     };
+#
+#     substr($1,1,1) == ">" {
+#         if (subj != "")
+#             print qry "\t" subj "\t" pI "\t-1\t-1\t-1\t" qStart "\t" qEnd "\t" sStart "\t" sEnd "\t" eval "\t" bits;
+#
+#     subj = substr($1,2)
+#     qStart = 0;
+#     sStart = 0;
+#     };
+#
+#     ($1 == "Score") {
+#         bits = $3
+#         eval = $8
+#     };
+#
+#     ($1 == "Identities") {
+#         pI = substr($4,2,length($4)-4)
+#     };
+#
+#     ($1 == "Query:") {
+#         if (qStart == 0)
+#             qStart = $2
+#         qEnd = $4
+#     };
+#
+#     ($1 == "Sbjct:") {
+#         if (sStart == 0)
+#             sStart = $2
+#         sEnd = $4
+#     }; ' "$1" > "$2"
+#     return $?
+# }
+#
+#
+# filter_blast_tabular_eval() # INPUT OUTPUT EVALUE
+# {
+#     awk -F\\t ' $11 < '$3 "$1" > "$2"
+#     return $?
+# }
+#
+# ## COUNTING FUNCTIONS
+#
+# total_hits_blast_tabular() # INPUT
+# {
+#     grep -v -E '(^$|^ *#)' -c "$1"
+#     return $?
+# }
 
 
 # count_hits() # INPUT
@@ -123,12 +254,12 @@ median_evalue_blast_tabular() # INPUT
 
 bit_score_quartiles() # INPUT
 {
-    q025_index=$(($(wc -l < "${1}") / 4))
-    sort -g -k12 -t"	" "${1}" | \
+    q025_index=$(($(zcat "${1}" | wc -l) / 4))
+    zcat "${1}" | sort -g -k12 -t"	" | \
         awk -F\\t '
-NR == '$q025_index' { printf $12 "\t"}; 
-NR == '$q025_index'*2 { printf $12 "\t"};
-NR == '$q025_index'*3 { printf $12 "\n"; exit };'
+NR == '$q025_index' { printf "\t" $12 };
+NR == '$q025_index'*2 { printf "\t" $12 };
+NR == '$q025_index'*3 { printf "\t" $12 ; exit };'
     return $?
 }
 

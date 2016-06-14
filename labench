@@ -7,6 +7,9 @@
 #   see https://github.com/h-2/labench for more details
 #
 
+
+# see if we support UTF8 before sanitizing
+getCharmap
 # sanatize environment so all tools behave correctly
 unset LC_ALL
 unset LANG

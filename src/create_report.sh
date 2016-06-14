@@ -77,9 +77,17 @@ create_report()
 
     find_minbits
 
-    echo ".--------------------------.---------------.--------------.--------------.--------------."
-    echo "|             MODULE       |      PROFILE  |      # total |      # pairs |       # best |"
-    echo "|--------------------------+---------------+--------------+--------------+--------------|"
+    # HEADERS split over lines for readability:
+    : > "${OUTDIR}/report.tab"
+    printf "MODULE"         >> "${OUTDIR}/report.tab"
+    printf "\tPROFILE"      >> "${OUTDIR}/report.tab"
+    printf "\t# total"      >> "${OUTDIR}/report.tab"
+    printf "\t# pairs"      >> "${OUTDIR}/report.tab"
+    printf "\t# best"       >> "${OUTDIR}/report.tab"
+    printf "\tbitScore Q1"  >> "${OUTDIR}/report.tab"
+    printf "\tbitScore MED" >> "${OUTDIR}/report.tab"
+    printf "\tbitScore Q3"  >> "${OUTDIR}/report.tab"
+    printf "\n"             >> "${OUTDIR}/report.tab"
 
     for MODPROF in ${MODPROFS}; do
 
@@ -92,10 +100,16 @@ create_report()
         filter_file "${OUTPUT}"
 
         # print diagnostics to stdout
-        printf '|%25s |%14s |%10s |%10s |%10s |\n' ${MODULE} ${PROFILE} $(zcat "${OUTPUT}.filtered.gz" |wc -l) $(zcat "${OUTPUT}.bestPerQrySubj.gz" |wc -l) $(zcat "${OUTPUT}.bestPerQry.gz" |wc -l)
+        printf "${MODULE}"                                      >> "${OUTDIR}/report.tab"
+        printf "\t${PROFILE}"                                   >> "${OUTDIR}/report.tab"
+        printf "\t$(zcat "${OUTPUT}.filtered.gz" |wc -l)"       >> "${OUTDIR}/report.tab"
+        printf "\t$(zcat "${OUTPUT}.bestPerQrySubj.gz" |wc -l)" >> "${OUTDIR}/report.tab"
+        printf "\t$(zcat "${OUTPUT}.bestPerQry.gz" |wc -l)"     >> "${OUTDIR}/report.tab"
+        bit_score_quartiles "${OUTPUT}.bestPerQry.gz"           >> "${OUTDIR}/report.tab"
+        printf "\n"                                             >> "${OUTDIR}/report.tab"
+
     done
 
-    echo "'--------------------------'---------------'--------------'--------------'--------------'"
-    echo ""
-
+    pretty_print2 "${OUTDIR}/report.tab"
 }
+

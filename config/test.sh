@@ -9,7 +9,9 @@ DATABASE_FA="${HOME}/sequences/uniprot_sprot.fasta"
 # RAPSearch2.09_64bits:blastx_default
 # RAPSearch2.09_64bits:blastx_fast"
 
-MODPROFS="lambda-0.9.4:fast
+MODPROFS="lambda-0.9.4:default
+diamond-0.8.1:slow
+lambda-0.9.4:fast
 diamond-0.8.1:default"
 
 DEBUG=1
