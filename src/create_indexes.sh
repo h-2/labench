@@ -63,17 +63,18 @@ create_indexes()
         # create/clear logfile
         :> ${LOGFILE}
 
-        echo "** Creating Index for ${INDEXIDENT} **" >> ${LOGFILE}
-        echo "* Executing: ${DO_INDEX_DB}" >> ${LOGFILE}
-        echo "" >> ${LOGFILE}
+#         echo "** Creating Index for ${INDEXIDENT} **" >> ${LOGFILE}
+#         echo "* Executing: ${DO_INDEX_DB}" >> ${LOGFILE}
+#         echo "" >> ${LOGFILE}
 
         # run the call and catch ram and runtime
-        wrapper '${DO_INDEX_DB}' '${LOGFILE}'
+        wrapper '${DO_INDEX_DB}' '${LOGFILE}' || { echo "ERROR creating index for ${MODPROF}, see logfile." && continue; }
+
         # function set global time and ram variables
 
-        echo "* total time spent:\t${time}s" >> ${LOGFILE}
-        echo "* max RAM used:\t${ram}KiB" >> ${LOGFILE}
-        echo "" >> ${LOGFILE}
+#         echo "* total time spent:\t${time}s" >> ${LOGFILE}
+#         echo "* max RAM used:\t${ram}KiB" >> ${LOGFILE}
+#         echo "" >> ${LOGFILE}
 
         post_index || exit $(echo $? && echo "Error in ${INDEXIDENT}'s post-processing" > /dev/stderr)
 

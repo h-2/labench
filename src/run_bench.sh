@@ -65,17 +65,18 @@ run_benchmark()
         # create/clear logfile
         :> ${LOGFILE}
 
-        echo "** Running Benchmark for ${MODPROF} **" >> ${LOGFILE}
-        echo "* Executing: ${DO_SEARCH}" >> ${LOGFILE}
-        echo "" >> ${LOGFILE}
+#         echo "** Running Benchmark for ${MODPROF} **" >> ${LOGFILE}
+#         echo "* Executing: ${DO_SEARCH}" >> ${LOGFILE}
+#         echo "" >> ${LOGFILE}
 
         # run the call and catch ram and runtime
-        wrapper '${DO_SEARCH}' '${LOGFILE}'
+        wrapper '${DO_SEARCH}' '${LOGFILE}' || { echo "ERROR running bench for ${MODPROF}, see logfile." && continue; }
+
         # function set global time and ram variables
 
-        echo "* total time spent:\t${time}s" >> ${LOGFILE}
-        echo "* max RAM used:\t${ram}KiB" >> ${LOGFILE}
-        echo "" >> ${LOGFILE}
+#         echo "* total time spent:\t${time}s" >> ${LOGFILE}
+#         echo "* max RAM used:\t${ram}KiB" >> ${LOGFILE}
+#         echo "" >> ${LOGFILE}
 
         post_search|| exit $(echo $? && echo "Error in ${MODPROF}'s post-processing" > /dev/stderr)
         # compress

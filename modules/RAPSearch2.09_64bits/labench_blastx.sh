@@ -1,54 +1,21 @@
 #!/bin/sh
 
-#Change if different
-#BINDIR=${BENCHDIR}/modules/${MODULE}/bin
-
-# Change if different
-#OUTPUT="${OUTDIR}/SEARCH/${MODULE}-${PROFILE}/output"
-# if you do change this, make sure that after the search the
-# file is named as above, e.g. by overloading post_search()
-
 ## for show-profiles
-getProfiles()
-{
-    case $PROGRAMMODE in
-        "BLASTX")
-            PROFILES="blastx_default blastx_fast"
-            ;;
-        *) # no other modes
-            ;;
-    esac
-}
+PROFILES="default fast"
 
 ## must define DO_INDEX_DB for all profiles
 setupCommands()
 {
-    # may define a function that will be run before indexing
-#     pre_index()
-#     {
-#     }
-
     case $PROFILE in
-        "blastx_default" | "blastx_fast")
+        "default" | "fast")
             DO_INDEX_DB="${BINDIR}/prerapsearch -d ${DATABASE_FA} -n ./db"
-            INDEXIDENT=$MODULE:prot
+            INDEXIDENT=default
             ;;
         *)
             echo "ERROR: Profile ${PROFILE} does not exist."
             exit 100
             ;;
     esac
-
-    # may define a function that will be run after indexing
-#     post_index()
-#     {
-#     }
-
-
-    # may define a function that will be run before search
-#     pre_search()
-#     {
-#     }
 
     # need to remove .m8 from file, because rapsearch always adds it
     BASECMD="${BINDIR}/rapsearch -q query.fasta -d ${TMPDIR}/INDEX/${INDEXIDENT}/db -o ${OUTPUT%???}
@@ -57,10 +24,10 @@ setupCommands()
            -v ${MAXDBENTRIES} -b 0"
 
     case $PROFILE in
-        "blastx_default")
+        "default")
             DO_SEARCH="${BASECMD}"
             ;;
-        "blastx_fast")
+        "fast")
             DO_SEARCH="${BASECMD} -a t"
             ;;
         *)
@@ -80,7 +47,7 @@ setupCommands()
         {
             print $1 "\t" $2 "\t" $3 "\t" $4 "\t" $5 "\t" $6 "\t" \
                 $7 "\t" $8 "\t" $9 "\t" $10 "\t" 10^($11) "\t"  $12
-        }' "${OUTPUT}_log_e" > ${OUTPUT} ## Rapsearch2 writes to OUTPUT.m8 by default
+        }' "${OUTPUT}_log_e" > ${OUTPUT}
         rm "${OUTPUT}_log_e"
     }
 }
