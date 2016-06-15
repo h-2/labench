@@ -6,20 +6,26 @@
 ## maximum of two values. also works if one value is blank (i.e. only one arg)
 max()
 {
-    if ( [ $# -eq 1 ] || [ $(echo "$1 > $2" | bc) -eq 1 ] ); then
-        echo $1
-    else
-        echo $2
-    fi
+    echo $@ | awk '
+    {
+        max = -1000000
+        for (i=1; i<=NF; i++)
+            if ($i > max)
+                max = $i
+        print max
+    }'
 }
 
 min()
 {
-    if ( [ $# -eq 1 ] || [ $(echo "$1 < $2" | bc) -eq 1 ] ); then
-        echo $1
-    else
-        echo $2
-    fi
+    echo $@ | awk '
+    {
+        min = 1000000
+        for (i=1; i<=NF; i++)
+            if ($i < min)
+                min = $i
+        print min
+    }'
 }
 
 pretty_print2() # INPUTFILE
