@@ -180,7 +180,6 @@ done
 QUERY_FA=$(readlink -f "${QUERY_FA}")
 DATABASE_FA=$(readlink -f "${DATABASE_FA}")
 OUTDIR=$(readlink -f "${OUTDIR}")
-EVALUE_ACTUAL=$(echo $EVALUE | awk ' {print $1 * 100}') # make sure that initial cutoff is more lenient
 PROGRAMMODE=$(echo "$PROGRAMMODE" | tr '[:upper:]' '[:lower:]')
 
 # catch interrupts and terms
@@ -213,6 +212,9 @@ for s in $(ls "${BENCHDIR}"/src/*.sh); do
 done
 IFS=${OLD_IFS}
 
+# make sure that initial cutoff is more lenient since e-value calculation fluctuates
+EVALUE_ACTUAL=$(max 1 ${EVALUE})
+
 # these are the modules
 MODULES=`ls ${BENCHDIR}/modules`
 
@@ -226,6 +228,7 @@ if [ ${DEBUG:+x} ]; then
     echo "#  OUTDIR         : ${OUTDIR}"
     echo "#  MODULES        : ${MODULES}"
     echo "#  EVALUE         : ${EVALUE}"
+    echo "#  EVALUE_ACTUAL  : ${EVALUE_ACTUAL}"
     echo "#  MAXDBENTRIES   : ${MAXDBENTRIES}"
 fi
 
