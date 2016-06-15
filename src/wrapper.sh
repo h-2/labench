@@ -101,7 +101,7 @@ case $(uname -s) in
             [ $# -eq 2 ] || return $(echo $? && echo "ERROR: Wrong number or args to wrapper (two expected)." > /dev/stderr)
 
             # prefix with command to get ram
-            CMD="{ /usr/bin/time -l $1 2>&1; echo $? > ${TMPDIR}/_retval ; } | tee $2 | tail -n 20 > ${TMPDIR}/_time"
+            CMD="{ /usr/bin/time -l $1 2>&1; echo "'$?'" > ${TMPDIR}/_retval ; } | tee $2 | tail -n 20 > ${TMPDIR}/_time"
             ram=0
             time=$(date +%s)
 
@@ -118,7 +118,7 @@ case $(uname -s) in
 
 #             echo $ram
 #             echo $t
-            return $(cat "${TMPDIR}/_retval")
+            return $(cat "${TMPDIR}/_retval" && rm "${TMPDIR}/_retval")
         }
         ;;
     *)

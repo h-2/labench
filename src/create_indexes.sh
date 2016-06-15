@@ -58,25 +58,16 @@ create_indexes()
         ln -s "${DATABASE_FA}" db.fasta
 
         # run a module's custom preperation function if set
-        pre_index || exit $(echo $? && echo "Error in ${MODPROF}'s preperation" > /dev/stderr)
+        pre_index || { echo "ERROR in ${INDEXIDENT}'s pre-processing; skipping." > /dev/stderr ; continue; }
 
         # create/clear logfile
         :> ${LOGFILE}
 
-#         echo "** Creating Index for ${INDEXIDENT} **" >> ${LOGFILE}
-#         echo "* Executing: ${DO_INDEX_DB}" >> ${LOGFILE}
-#         echo "" >> ${LOGFILE}
-
         # run the call and catch ram and runtime
-        wrapper '${DO_INDEX_DB}' '${LOGFILE}' || { echo "ERROR creating index for ${MODPROF}, see logfile." && continue; }
+        wrapper '${DO_INDEX_DB}' '${LOGFILE}' || { echo "ERROR creating index for ${MODPROF}, see ${LOGFILE} for details." > /dev/stderr ; continue; }
+        # wrapper sets global time and ram variables
 
-        # function set global time and ram variables
-
-#         echo "* total time spent:\t${time}s" >> ${LOGFILE}
-#         echo "* max RAM used:\t${ram}KiB" >> ${LOGFILE}
-#         echo "" >> ${LOGFILE}
-
-        post_index || exit $(echo $? && echo "Error in ${INDEXIDENT}'s post-processing" > /dev/stderr)
+        post_index || { echo "ERROR in ${INDEXIDENT}'s post-processing; skipping." > /dev/stderr ; continue; }
 
         # print diagnostics to stdout
 #         printf '|%25s |%14s |%13s |%11s |\n' ${MODULE} ${INDEXIDENT} ${ram} ${time}

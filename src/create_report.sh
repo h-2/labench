@@ -11,7 +11,10 @@ find_minbits()
 
     for MODPROF in ${MODPROFS}; do
 
-        _MINBITS=$(zcat "${TMPDIR}/SEARCH/${MODPROF}/output.m8.gz" | \
+        OUTPUT="${TMPDIR}/SEARCH/${MODPROF}/output.m8"
+        [ -f "${OUTPUT}.gz" ] || continue # there was an error so this program is skipped
+
+        _MINBITS=$(zcat "${OUTPUT}.gz" | \
         awk '
         BEGIN { MINBITS=10000000 }
         $11 < '$EVALUE' && $12 < MINBITS { MINBITS=$12 }
@@ -92,6 +95,8 @@ create_report()
     for MODPROF in ${MODPROFS}; do
 
         OUTPUT="${TMPDIR}/SEARCH/${MODPROF}/output.m8"
+
+        [ -f "${OUTPUT}.gz" ] || continue # there was an error so this program is skipped
 
         # get MODULE and PROFILE variables from MODPROF which is MODULE:PROFILE
         MODULE=${MODPROF%%:*}

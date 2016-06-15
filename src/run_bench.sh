@@ -60,25 +60,17 @@ run_benchmark()
         ln -s "${QUERY_FA}" query.fasta
 
         # run a module's custom preperation function if set
-        pre_search || exit $(echo $? && echo "Error in ${MODPROF}'s preperation" > /dev/stderr)
+        pre_search || { echo "ERROR in ${MODPROF}'s pre-processing; skipping." > /dev/stderr ; continue; }
 
         # create/clear logfile
         :> ${LOGFILE}
 
-#         echo "** Running Benchmark for ${MODPROF} **" >> ${LOGFILE}
-#         echo "* Executing: ${DO_SEARCH}" >> ${LOGFILE}
-#         echo "" >> ${LOGFILE}
-
         # run the call and catch ram and runtime
-        wrapper '${DO_SEARCH}' '${LOGFILE}' || { echo "ERROR running bench for ${MODPROF}, see logfile." && continue; }
+        wrapper '${DO_SEARCH}' '${LOGFILE}' || { echo "ERROR running bench for ${MODPROF}, see ${LOGFILE} for details." > /dev/stderr ; continue; }
 
-        # function set global time and ram variables
+        # wrapper sets global time and ram variables
 
-#         echo "* total time spent:\t${time}s" >> ${LOGFILE}
-#         echo "* max RAM used:\t${ram}KiB" >> ${LOGFILE}
-#         echo "" >> ${LOGFILE}
-
-        post_search|| exit $(echo $? && echo "Error in ${MODPROF}'s post-processing" > /dev/stderr)
+        post_search || { echo "ERROR in ${MODPROF}'s post-processing; skipping." > /dev/stderr ; continue; }
         # compress
         gzip "${OUTPUT}"
 
