@@ -41,7 +41,7 @@ case $(uname -s) in
             wrapper()
             {
                 ##TODO still something wrong with this one
-                [ $# -eq 2 ] || exit $(echo $? && echo "ERROR: Wrong number or args to wrapper (two expected)." > /dev/stderr)
+                [ $# -eq 2 ] || return $(echo $? && echo "ERROR: Wrong number or args to wrapper (two expected)." > /dev/stderr)
                 time=$(date +%s)
 
                 CMD="$1 2>&1 > $2 &"
@@ -70,14 +70,17 @@ case $(uname -s) in
         else
             wrapper()
             {
-                [ $# -eq 2 ] || exit $(echo $? && echo "ERROR: Wrong number or args to wrapper (two expected)." > /dev/stderr)
+                [ $# -eq 2 ] || return $(echo $? && echo "ERROR: Wrong number or args to wrapper (two expected)." > /dev/stderr)
 
                 # prefix with command to get ram
                 CMD="/usr/bin/time -f '%M'  -o \"${TMPDIR}/_time\" $1 > $2 2>&1"
                 ram=0
                 time=$(date +%s)
 
+                set +e
                 eval $CMD
+                _retval=$?
+                set -e
 
                 time=$(($(date +%s)-time))
 
@@ -88,19 +91,23 @@ case $(uname -s) in
 
 #                 echo $ram
 #                 echo $t
+                return $_retval
             }
         fi
         ;;
     "FreeBSD" | "Darwin")
         wrapper()
         {
-            [ $# -eq 2 ] || exit $(echo $? && echo "ERROR: Wrong number or args to wrapper (two expected)." > /dev/stderr)
+            [ $# -eq 2 ] || return $(echo $? && echo "ERROR: Wrong number or args to wrapper (two expected)." > /dev/stderr)
+
             # prefix with command to get ram
-            CMD="{ /usr/bin/time -l $1 2>&1; } | tee $2 | tail -n 20 > ${TMPDIR}/_time"
+            CMD="{ /usr/bin/time -l $1 2>&1; echo $? > ${TMPDIR}/_retval ; } | tee $2 | tail -n 20 > ${TMPDIR}/_time"
             ram=0
             time=$(date +%s)
 
+            set +e
             eval $CMD
+            set -e
 
             time=$(($(date +%s)-time))
 
@@ -111,6 +118,7 @@ case $(uname -s) in
 
 #             echo $ram
 #             echo $t
+            return $(cat "${TMPDIR}/_retval")
         }
         ;;
     *)
