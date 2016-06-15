@@ -1,0 +1,1 @@
+../RAPSearch2.09_64bits/labench_blastx.sh
