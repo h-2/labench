@@ -71,8 +71,9 @@ run_benchmark()
         # wrapper sets global time and ram variables
 
         post_search || { echo "ERROR in ${MODPROF}'s post-processing; skipping." > /dev/stderr ; continue; }
-        # compress
-        gzip "${OUTPUT}"
+        # remove comments, blank lines and compress
+        grep -v -E '(^$|^ *#)' "${OUTPUT}" | gzip > "${OUTPUT}.gz"
+        rm "${OUTPUT}"
 
         # print diagnostics to stdout
 #         printf '|%25s |%14s |%13s |%11s |\n' ${MODULE} ${PROFILE} ${ram} ${time}

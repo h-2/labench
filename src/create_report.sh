@@ -37,7 +37,7 @@ filter_file() #INPUTFILE
 {
     # strip comments and newlines filter out bitscore that are too small, sort
     # (note that the sorting is by IDs and not by evalue anymore (but we can't rely on that anyway)
-    zgrep -v -E '(^$|^ *#)' "${1}.gz" | awk -F\\t ' $12 > '${MINBITS} | sort | gzip > "${1}.filtered.gz"
+    zcat "${1}.gz" | awk -F\\t ' $12 > '${MINBITS} | sort | gzip > "${1}.filtered.gz"
     # only best hit per query
     zcat "${1}.filtered.gz" | awk -F\\t '
 $1 != lastQry {
