@@ -204,18 +204,20 @@ realMain(const char * q, const char * s, const char * p, const char * o)
             }
         }
 
-        r.matches.sort();
-
-        SEQAN_OMP_PRAGMA(critical(fileWrite))
+        if (length(r.matches) > 0)
         {
-            writeRecord(outfile, r);
+            r.matches.sort();
 
-        }
+            SEQAN_OMP_PRAGMA(critical(fileWrite))
+            {
+                writeRecord(outfile, r);
+            }
 
-        if ((getThreadId() == 0) && ((q * 50) / length(qryIds) != percent))
-        {
-            std::cout << '*';
-            percent = (q * 50) / length(qryIds);
+            if ((getThreadId() == 0) && ((q * 50) / length(qryIds) != percent))
+            {
+                std::cout << '*';
+                percent = (q * 50) / length(qryIds);
+            }
         }
     }
 
