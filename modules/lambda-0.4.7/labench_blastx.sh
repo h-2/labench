@@ -25,7 +25,7 @@ setupCommands()
     esac
 
     ## run command definitions
-    BASECMD="${BINDIR}/lambda -q query.fasta -d ${TMPDIR}/INDEX/${MODULE}:${INDEXIDENT}/db.fasta -e ${EVALUE_ACTUAL} -v 2 -t ${NCPU} -o ${OUTPUT} -nm ${MAXDBENTRIES}"
+    BASECMD="${BINDIR}/lambda -q query.fasta -d ${TMPDIR_DB}/INDEX/${MODULE}:${INDEXIDENT}/db.fasta -e ${EVALUE_ACTUAL} -v 2 -t ${NCPU} -o ${OUTPUT} -nm ${MAXDBENTRIES}"
 
     case $PROFILE in
         "default")

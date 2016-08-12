@@ -60,7 +60,7 @@ setRunCommands()
 #     {
 #     }
 
-    BASECMD="${BINDIR}/lambda -q query.fasta -d ${TMPDIR}/INDEX/${INDEXIDENT}/db.fasta -e ${EVALUE} -v 2 -t ${NCPU} -o ${OUTPUT} -nm ${MAXDBENTRIES}"
+    BASECMD="${BINDIR}/lambda -q query.fasta -d ${TMPDIR_DB}/INDEX/${INDEXIDENT}/db.fasta -e ${EVALUE} -v 2 -t ${NCPU} -o ${OUTPUT} -nm ${MAXDBENTRIES}"
 
     case $PROFILE in
         "blastx_default")

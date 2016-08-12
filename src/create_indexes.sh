@@ -50,11 +50,11 @@ create_indexes()
         ### now the indexing begins
 
         # if an index for this INDEXIDENT already exists, skip
-        [ -d "${TMPDIR}/INDEX/${MODULE}:${INDEXIDENT}" ] && continue
+        [ -d "${TMPDIR_DB}/INDEX/${MODULE}:${INDEXIDENT}" ] && continue
 
         # prepare directory and change CWD
-        mkdir -p "${TMPDIR}/INDEX/${MODULE}:${INDEXIDENT}"
-        cd "${TMPDIR}/INDEX/${MODULE}:${INDEXIDENT}"
+        mkdir -p "${TMPDIR_DB}/INDEX/${MODULE}:${INDEXIDENT}"
+        cd "${TMPDIR_DB}/INDEX/${MODULE}:${INDEXIDENT}"
         ln -s "${DATABASE_FA}" db.fasta
 
         # run a module's custom preperation function if set
