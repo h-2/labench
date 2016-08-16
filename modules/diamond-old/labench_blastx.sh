@@ -23,7 +23,7 @@ setupCommands()
     # the minimum bit-score is too strict so we set it to 40 and hope its ok
     BASECMD="${BINDIR}/diamond blastx --query ${QUERY_FA} --db ${TMPDIR_DB}/INDEX/${MODULE}:${INDEXIDENT}/db
              -o ${OUTPUT} --threads ${NCPU} --max-target-seqs ${MAXDBENTRIES} --evalue ${EVALUE_ACTUAL}
-             --tmpdir ${TMPDIR} --min-score 40"
+             --tmpdir ${TMPDIR} --min-score 0"
 
     case $PROFILE in
         "default")
