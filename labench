@@ -155,8 +155,9 @@ if [ ! -r "$DATABASE_FA" ]; then
   exit 127
 fi
 
-# for safety regions always create a TMPDIR inside TMPDIR (we will delete this later)
+# for safety reasons always create a TMPDIR inside TMPDIR (we will delete this later)
 TMPDIR="${TMPDIR}/labench-$$"
+TMPDIR_DB="${TMPDIR_DB-${TMPDIR}}"
 
 # check validity of tmpdir and outputdir
 for DIR in "${TMPDIR}" "${OUTDIR}"; do

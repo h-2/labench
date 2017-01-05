@@ -20,7 +20,7 @@ setupCommands()
             ;;
     esac
 
-    BASECMD="${BINDIR}/diamond blastx --query ${QUERY_FA} --db ${TMPDIR}/INDEX/${MODULE}:${INDEXIDENT}/db
+    BASECMD="${BINDIR}/diamond blastx --query ${QUERY_FA} --db ${TMPDIR_DB}/INDEX/${MODULE}:${INDEXIDENT}/db
              -a matches --threads ${NCPU} --max-target-seqs ${MAXDBENTRIES} --evalue ${EVALUE_ACTUAL}
              --tmpdir ${TMPDIR}"
 
