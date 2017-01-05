@@ -12,7 +12,7 @@ silverstandard: silverstandard.o
 
 silverstandard.o: $(SRC)/silverstandard.cpp
 	mkdir -p $(OBJ)
-	$(CXX) $(CXXFLAGS) -std=c++14  -fopenmp -DSEQAN_HAS_OPENMP=1 -DNDEBUG -O3 -c -o $(OBJ)/silverstandard.o $(SRC)/silverstandard.cpp
+	$(CXX) $(CXXFLAGS) -std=c++14  -fopenmp -DSEQAN_HAS_OPENMP=1 -D_GLIBCXX_USE_C99=1 -DNDEBUG -O3 -c -o $(OBJ)/silverstandard.o $(SRC)/silverstandard.cpp
 
 clean:
 	rm -r $(OBJ)

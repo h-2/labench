@@ -63,6 +63,10 @@ realMain(const char * q, const char * s, const char * p, const char * o)
 
     std::vector<size_t> origQryLengths;
 
+    size_t numAlignments = 0;
+
+    std::cout << "Reading files and creating hash tables... ";
+
     {
         TOrigQrySeqs origQrySeqs;
         TOrigSubjSeqs origSubjSeqs;
@@ -126,7 +130,7 @@ realMain(const char * q, const char * s, const char * p, const char * o)
             qryHashFuture.wait();
             subjHashFuture.wait();
             std::cout << "phf start..." << std::endl;
-            readPairsAndAssign(queryToSubjects, qryMap, subjMap, p);
+            readPairsAndAssign(queryToSubjects, numAlignments, qryMap, subjMap, p);
             std::cout << "phf stop." << std::endl;
         });
 
@@ -134,7 +138,11 @@ realMain(const char * q, const char * s, const char * p, const char * o)
         // destruction of futures guarantees completion of threads
     }
 
-    std::cout << "All data extracted... beginning to align:" << std::endl;
+    std::cout << "done.\n\n"
+              << "Total number of query sequences:            " << length(qryIds) << '\n'
+              << "Total number of subject sequences:          " << length(subjIds) << '\n'
+              << "Selected number of align's to be computed:  " << numAlignments  << '\n'
+              << std::endl;
 
     using TString       = decltype(qrySeqs[0]);
     using TGaps         = Gaps<TString, ArrayGaps>;
@@ -157,68 +165,75 @@ realMain(const char * q, const char * s, const char * p, const char * o)
     writeHeader(outfile); // write file header
 
     size_t percent = 0;
-    std::cout << "0    10   20   30   40   50   60   70   80   90   100\n ";
+    std::cout << "Computing and writing alignments:\n"
+              << "0%  10%  20%  30%  40%  50%  60%  70%  80%  90%  100%\n|" << std::flush;
 
+    size_t g_q = 0;
     SEQAN_OMP_PRAGMA(parallel for)
     for (size_t q = 0; q < length(qryIds); ++q)
     {
-        TBlastRecord r(qryIds[q]);
-        r.qLength = length(origQryLengths[q]);
 
-        for (size_t s : queryToSubjects[q])
+        if (queryToSubjects[q].size() > 0)
         {
-            appendValue(r.matches, TBlastMatch(qryIds[q], subjIds[s]));
-            TBlastMatch & mFinal = back(r.matches);
-            // choose temporary high value
-            mFinal.eValue = std::numeric_limits<decltype(mFinal.eValue)>::max();
+            TBlastRecord r(qryIds[q]);
+            r.qLength = length(origQryLengths[q]);
 
-            for (size_t qf = 0; qf < qNumFrames(prog); ++qf)
+            for (size_t s : queryToSubjects[q])
             {
-                for (size_t sf = 0; sf < sNumFrames(prog); ++sf)
+                appendValue(r.matches, TBlastMatch(qryIds[q], subjIds[s]));
+                TBlastMatch & mFinal = back(r.matches);
+                // choose temporary high value
+                mFinal.eValue = std::numeric_limits<decltype(mFinal.eValue)>::max();
+
+                for (size_t qf = 0; qf < qNumFrames(prog); ++qf)
                 {
-                    TBlastMatch m(qryIds[q], subjIds[s]);
+                    for (size_t sf = 0; sf < sNumFrames(prog); ++sf)
+                    {
+                        TBlastMatch m(qryIds[q], subjIds[s]);
 
-                    auto const & qSeq = qrySeqs[q * qNumFrames(prog) + qf];
-                    auto const & sSeq = subjSeqs[s * sNumFrames(prog) + sf];
+                        auto const & qSeq = qrySeqs[q * qNumFrames(prog) + qf];
+                        auto const & sSeq = subjSeqs[s * sNumFrames(prog) + sf];
 
-                    assignSource(m.alignRow0, qSeq);
-                    assignSource(m.alignRow1, sSeq);
+                        assignSource(m.alignRow0, qSeq);
+                        assignSource(m.alignRow1, sSeq);
 
-                    localAlignment(m.alignRow0, m.alignRow1, seqanScheme(context(outfile).scoringScheme));
+                        localAlignment(m.alignRow0, m.alignRow1, seqanScheme(context(outfile).scoringScheme));
 
-                    m.qStart = beginPosition(m.alignRow0);
-                    m.qEnd   = endPosition(m.alignRow0);
-                    m.sStart = beginPosition(m.alignRow1);
-                    m.sEnd   = endPosition(m.alignRow1);
+                        m.qStart = beginPosition(m.alignRow0);
+                        m.qEnd   = endPosition(m.alignRow0);
+                        m.sStart = beginPosition(m.alignRow1);
+                        m.sEnd   = endPosition(m.alignRow1);
 
-                    m.qLength = length(qSeq);
-                    m.sLength = length(sSeq);
+                        m.qLength = length(qSeq);
+                        m.sLength = length(sSeq);
 
-                    computeAlignmentStats(m, context(outfile));
-                    computeBitScore(m, context(outfile));
-                    computeEValue(m, context(outfile));
+                        computeAlignmentStats(m, context(outfile));
+                        computeBitScore(m, context(outfile));
+                        computeEValue(m, context(outfile));
 
-                    if (m.eValue < mFinal.eValue)
-                        swap(m, mFinal);
+                        if (m.eValue < mFinal.eValue)
+                            swap(m, mFinal);
+                    }
                 }
             }
-        }
 
-        if (length(r.matches) > 0)
-        {
-            r.matches.sort();
-
-            SEQAN_OMP_PRAGMA(critical(fileWrite))
+            if (length(r.matches) > 0)
             {
-                writeRecord(outfile, r);
-            }
+                r.matches.sort();
 
-            if ((getThreadId() == 0) && ((q * 50) / length(qryIds) != percent))
-            {
-                std::cout << '*';
-                percent = (q * 50) / length(qryIds);
+                SEQAN_OMP_PRAGMA(critical(fileWrite))
+                {
+                    writeRecord(outfile, r);
+                }
+
             }
         }
+
+        SEQAN_OMP_PRAGMA(atomic)
+        ++g_q;
+
+        if (getThreadId == 0)
+            printProgressBar(percent, (g_q * 100) / length(qryIds));
     }
 
     writeFooter(outfile);

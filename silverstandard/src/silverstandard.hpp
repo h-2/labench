@@ -189,6 +189,7 @@ hashIds(std::unordered_map<String<char, Alloc<Truncate_>>, size_t> & out,
 
 inline void
 readPairsAndAssign(std::vector<std::vector<size_t>> & out,
+                   size_t & numAlignments,
                    std::unordered_map<String<char, Alloc<Truncate_>>, size_t> const & qMap,
                    std::unordered_map<String<char, Alloc<Truncate_>>, size_t> const & sMap,
                    const char * pairFilePath)
@@ -202,6 +203,9 @@ readPairsAndAssign(std::vector<std::vector<size_t>> & out,
     String<char, Alloc<Truncate_>> sBuf;
     size_t qInd;
     size_t sInd;
+
+    numAlignments = 0;
+
     while (!atEnd(fit))
     {
         clear(qBuf);
@@ -231,6 +235,7 @@ readPairsAndAssign(std::vector<std::vector<size_t>> & out,
         }
 //         std::cout << "qind: " << qInd << "\t sind: " << sInd << std::endl;
         out.at(qInd).push_back(sInd);
+        ++numAlignments;
     }
 
 //     for (auto const & v : out)
@@ -280,5 +285,24 @@ swap(BlastMatch<TAlignRow0_, TAlignRow1_, TPos_, TQId_, TSId_> & lhs,
     swap(lhs.alignRow1, rhs.alignRow1);
 }
 
-
+inline void
+printProgressBar(uint64_t & lastPercent, uint64_t curPerc)
+{
+    //round down to even
+    curPerc = curPerc & ~1;
+//     #pragma omp critical(stdout)
+    if ((curPerc > lastPercent) && (curPerc <= 100))
+    {
+        for (uint64_t i = lastPercent + 2; i <= curPerc; i+=2)
+        {
+            if (i == 100)
+                std::cout << "|\n" << std::flush;
+            else if (i % 10 == 0)
+                std::cout << ":" << std::flush;
+            else
+                std::cout << "." << std::flush;
+        }
+        lastPercent = curPerc;
+    }
+}
 
