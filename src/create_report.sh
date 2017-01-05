@@ -11,7 +11,7 @@ find_minbits()
 
     for MODPROF in ${MODPROFS}; do
 
-        OUTPUT="${TMPDIR}/SEARCH/${MODPROF}/output.m8"
+        OUTPUT="${TMPDIR}/SEARCH/${MODPROF}/1/output.m8"
         [ -f "${OUTPUT}.gz" ] || continue # there was an error so this program is skipped
 
         _MINBITS=$(zcat "${OUTPUT}.gz" | \
@@ -94,7 +94,7 @@ create_report()
 
     for MODPROF in ${MODPROFS}; do
 
-        OUTPUT="${TMPDIR}/SEARCH/${MODPROF}/output.m8"
+        OUTPUT="${TMPDIR}/SEARCH/${MODPROF}/1/output.m8" # always take results from first iteration
 
         [ -f "${OUTPUT}.gz" ] || continue # there was an error so this program is skipped
 

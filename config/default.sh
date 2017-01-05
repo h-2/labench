@@ -28,3 +28,5 @@ else # bsd and mac
 fi
 export OMP_NUM_THREADS=${NCPU}
 
+# iterations of benchmark
+REPEATS=${REPEATS-3}

@@ -28,6 +28,33 @@ min()
     }'
 }
 
+# input file as one column of numbers; outputs "min\tmedian\tmax"
+min_med_max() #input file
+{
+    sort -n $@| awk '
+    BEGIN {
+        min =  1000000;
+        max = -1000000;
+        count = 0;
+    }
+    $1 ~ /^[0-9]+(\.[0-9]*)?$/ {
+        a[count++] = $1;
+        if ($1 < min)
+            min = $1
+        if ($1 > max)
+            max = $1
+    }
+    END {
+        if( (count % 2) == 1 ) {
+            median = a[ int(count/2) ];
+        } else {
+            median = ( a[count/2] + a[count/2-1] ) / 2;
+        }
+        OFS="\t";
+        printf min "\t" median "\t" max;
+    }'
+}
+
 pretty_print2() # INPUTFILE
 {
     numcols=$(awk -F\\t '
@@ -308,7 +335,6 @@ END {
 '
 
 }
-
 
 ############# HELPERS FOR LOADERS #####################
 

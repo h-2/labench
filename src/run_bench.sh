@@ -4,6 +4,7 @@ run_benchmark()
 {
     echo ""
     echo "RUNNING BENCHMARK..."
+    echo "[${REPEATS} iterations per module]"
     echo ""
 #     echo ".--------------------------.---------------.--------------.------------."
 #     echo "|             MODULE       |      PROFILE  |     RAM [MB] |   TIME [s] |"
@@ -11,11 +12,14 @@ run_benchmark()
 
     # HEADERS split over lines for readability:
     : > "${OUTDIR}/perf_search.tab"
-    printf "MODULE"          >> "${OUTDIR}/perf_search.tab"
-    printf "\tPROFILE"       >> "${OUTDIR}/perf_search.tab"
-    printf "\tRAM [MB]"      >> "${OUTDIR}/perf_search.tab"
-    printf "\tTIME [s]"      >> "${OUTDIR}/perf_search.tab"
-    printf "\n"              >> "${OUTDIR}/perf_search.tab"
+    printf "MODULE\t"        >> "${OUTDIR}/perf_search.tab"
+    printf "PROFILE\t"       >> "${OUTDIR}/perf_search.tab"
+    printf "RAM [MB]: min\t" >> "${OUTDIR}/perf_search.tab"
+    printf "med\t"           >> "${OUTDIR}/perf_search.tab"
+    printf "max\t"           >> "${OUTDIR}/perf_search.tab"
+    printf "TIME [s]: min\t" >> "${OUTDIR}/perf_search.tab"
+    printf "med\t"           >> "${OUTDIR}/perf_search.tab"
+    printf "max\n"           >> "${OUTDIR}/perf_search.tab"
 
     for MODPROF in ${MODPROFS}; do
 
@@ -35,54 +39,62 @@ run_benchmark()
         # default variables and functions if not overwritten
         BINDIR="${BENCHDIR}/modules/${MODULE}/bin"
         INDEXIDENT=${PROFILE}
-        LOGFILE="${OUTDIR}/run_${MODPROF}.log"
-        OUTPUT="${TMPDIR}/SEARCH/${MODPROF}/output.m8"
-        pre_search() { :
-        }
-        post_search() { :
-        }
+        LOGFILE="${OUTDIR}/run_${MODPROF}.log" # is overwritten by each iteration
 
-        # load module and profile
-        . "${BENCHDIR}/modules/${MODULE}/labench_${PROGRAMMODE}.sh"
-        setupCommands
+        for IT in $(seq 1 ${REPEATS}); do
 
-        ### now the search begins
+            OUTPUT="${TMPDIR}/SEARCH/${MODPROF}/${IT}/output.m8"
+            pre_search() { :
+            }
+            post_search() { :
+            }
 
-        if [ -d "${TMPDIR}/SEARCH/${MODPROF}" ]; then
-            echo "ERROR: The target directory already exists!"
-            cleanup
-            exit 123
-        fi
+            # load module and profile
+            . "${BENCHDIR}/modules/${MODULE}/labench_${PROGRAMMODE}.sh"
+            setupCommands
 
-        # prepare directory and change CWD
-        mkdir -p "${TMPDIR}/SEARCH/${MODPROF}"
-        cd "${TMPDIR}/SEARCH/${MODPROF}"
-        ln -s "${QUERY_FA}" query.fasta
+            ### now the search begins
 
-        # run a module's custom preperation function if set
-        pre_search || { echo "ERROR in ${MODPROF}'s pre-processing; skipping." > /dev/stderr ; continue; }
+            if [ -d "${TMPDIR}/SEARCH/${MODPROF}/${IT}" ]; then
+                echo "ERROR: The target directory already exists!"
+                cleanup
+                exit 123
+            fi
 
-        # create/clear logfile
-        :> ${LOGFILE}
+            # prepare directory and change CWD
+            mkdir -p "${TMPDIR}/SEARCH/${MODPROF}/${IT}"
+            cd "${TMPDIR}/SEARCH/${MODPROF}/${IT}"
+            ln -s "${QUERY_FA}" query.fasta
 
-        # run the call and catch ram and runtime
-        wrapper '${DO_SEARCH}' '${LOGFILE}' || { echo "ERROR running bench for ${MODPROF}, see ${LOGFILE} for details." > /dev/stderr ; continue; }
+            # run a module's custom preperation function if set
+            pre_search || { echo "ERROR in ${MODPROF}'s pre-processing; skipping." > /dev/stderr ; continue; }
 
-        # wrapper sets global time and ram variables
+            # create/clear logfile
+            :> ${LOGFILE}
 
-        post_search || { echo "ERROR in ${MODPROF}'s post-processing; skipping." > /dev/stderr ; continue; }
-        # remove comments, blank lines and compress
-        grep -v -E '(^$|^ *#)' "${OUTPUT}" | gzip > "${OUTPUT}.gz"
-        rm "${OUTPUT}"
+            # run the call and catch ram and runtime
+            wrapper '${DO_SEARCH}' '${LOGFILE}' || { echo "ERROR running bench for ${MODPROF}, see ${LOGFILE} for details." > /dev/stderr ; continue; }
 
-        # print diagnostics to stdout
-#         printf '|%25s |%14s |%13s |%11s |\n' ${MODULE} ${PROFILE} ${ram} ${time}
-        printf "${MODULE}"          >> "${OUTDIR}/perf_search.tab"
-        printf "\t${PROFILE}"       >> "${OUTDIR}/perf_search.tab"
-        printf "\t${ram}"           >> "${OUTDIR}/perf_search.tab"
-        printf "\t${time}"          >> "${OUTDIR}/perf_search.tab"
-        printf "\n"                 >> "${OUTDIR}/perf_search.tab"
+            # wrapper sets global time and ram variables
 
+            post_search || { echo "ERROR in ${MODPROF}'s post-processing; skipping." > /dev/stderr ; continue; }
+            # remove comments, blank lines and compress
+            grep -v -E '(^$|^ *#)' "${OUTPUT}" | gzip > "${OUTPUT}.gz"
+            rm "${OUTPUT}"
+
+            # print diagnostics to temporary files
+            echo "${ram}"     >> "${TMPDIR}/SEARCH/${MODPROF}/ram"
+            echo "${time}"    >> "${TMPDIR}/SEARCH/${MODPROF}/time"
+
+        done
+
+        # print diagnostics to table
+        printf "${MODULE}\t"                            >> "${OUTDIR}/perf_search.tab"
+        printf "${PROFILE}\t"                           >> "${OUTDIR}/perf_search.tab"
+        min_med_max "${TMPDIR}/SEARCH/${MODPROF}/ram"   >> "${OUTDIR}/perf_search.tab"
+        printf "\t"                                     >> "${OUTDIR}/perf_search.tab"
+        min_med_max "${TMPDIR}/SEARCH/${MODPROF}/time"  >> "${OUTDIR}/perf_search.tab"
+        printf "\n"                                     >> "${OUTDIR}/perf_search.tab"
     done
 
     pretty_print2 "${OUTDIR}/perf_search.tab"
