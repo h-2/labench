@@ -83,7 +83,7 @@ set -u
 
 # see if we support UTF8 before sanitizing
 getCharmap
-# sanatize environment so all tools behave correctly
+# sanitise environment so all tools behave correctly
 unset LC_ALL
 unset LANG
 LC_CTYPE="C"
@@ -214,7 +214,8 @@ done
 IFS=${OLD_IFS}
 
 # make sure that initial cutoff is more lenient since e-value calculation fluctuates
-EVALUE_ACTUAL=$(max 1 ${EVALUE})
+# EVALUE_ACTUAL=$(max 1 ${EVALUE})
+EVALUE_ACTUAL=$(echo "0$(echo "100 * ${EVALUE}" | bc)")
 
 # these are the modules
 MODULES=`ls ${BENCHDIR}/modules`

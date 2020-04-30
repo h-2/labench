@@ -43,6 +43,12 @@ run_benchmark()
 
         for IT in $(seq 1 ${REPEATS}); do
 
+            # BLAST runs are never repeated, because they are soo slow.
+            if [ ! "${MODULE%%blast*}" ] && [ $IT -gt 1 ]; then
+#                ln -s "${TMPDIR}/SEARCH/${MODPROF}/1" "${TMPDIR}/SEARCH/${MODPROF}/${IT}"
+                continue
+            fi
+
             OUTPUT="${TMPDIR}/SEARCH/${MODPROF}/${IT}/output.m8"
             pre_search() { :
             }

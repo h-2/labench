@@ -44,7 +44,7 @@ case $(uname -s) in
                 [ $# -eq 2 ] || return $(echo $? && echo "ERROR: Wrong number or args to wrapper (two expected)." > /dev/stderr)
                 time=$(date +%s)
 
-                CMD="$1 2>&1 > $2 &"
+                CMD="$1 > $2 2>&1 &"
 
             #     echo $CMD
 
@@ -74,6 +74,7 @@ case $(uname -s) in
 
                 # prefix with command to get ram
                 CMD="/usr/bin/time --quiet -f '%M'  -o \"${TMPDIR}/_time\" $1 > $2 2>&1"
+#               CMD="$1 > $2 2>&1"
                 ram=0
                 time=$(date +%s)
 

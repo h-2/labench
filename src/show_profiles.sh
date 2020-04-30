@@ -2,7 +2,7 @@
 
 show_profiles()
 {
-    for PROGRAMMODE in BLASTN BLASTP BLASTX TBLASTN TBLASTX; do
+    for PROGRAMMODE in blastn blastp blastx tblastn tblastx; do
         echo "Available ${PROGRAMMODE} modules with profiles:"
         echo "-----------------------------------------------"
 

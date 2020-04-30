@@ -78,7 +78,11 @@ create_report()
     echo ""
     echo "Preparing report..."
 
-    find_minbits
+    if [ -z "${MINBITS+x}" ]; then
+        find_minbits
+    else
+        echo "MINBITS was preset to ${MINBITS} !"
+    fi
 
     # HEADERS split over lines for readability:
     : > "${OUTDIR}/report.tab"
