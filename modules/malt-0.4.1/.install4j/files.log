@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fileLog>
+<createdFiles>
+<entry name=".install4j/inst_jre.cfg" shared="false" uninstallMode="0"/>
+<entry name="malt-run.vmoptions" shared="false" uninstallMode="3"/>
+<entry name=".install4j/automaticUpdater" shared="false" uninstallMode="0"/>
+<entry name=".install4j/automaticUpdater.png" shared="false" uninstallMode="2"/>
+<entry name=".install4j/malt-run.png" shared="false" uninstallMode="2"/>
+<entry name="class/resources/icons/malt-build48.png" shared="false" uninstallMode="0"/>
+<entry name="class/log4j.properties" shared="false" uninstallMode="0"/>
+<entry name="manual.pdf" shared="false" uninstallMode="0"/>
+<entry name="malt-build" shared="false" uninstallMode="0"/>
+<entry name=".install4j/i4j_extf_0_n96p7x.utf8" shared="false" uninstallMode="2"/>
+<entry name=".install4j/stats.properties" shared="false" uninstallMode="2"/>
+<entry name=".install4j/MessagesDefault" shared="false" uninstallMode="2"/>
+<entry name=".install4j/installation.log" shared="false" uninstallMode="0"/>
+<entry name=".install4j/i4jruntime.jar" shared="false" uninstallMode="2"/>
+<entry name=".install4j/uninstall.png" shared="false" uninstallMode="2"/>
+<entry name=".install4j/d35820b3.lprop" shared="false" uninstallMode="0"/>
+<entry name=".install4j/2bfa42ba.lprop" shared="false" uninstallMode="0"/>
+<entry name=".install4j/c67b37b5.lprop" shared="false" uninstallMode="0"/>
+<entry name=".install4j/8d06ae4d.lprop" shared="false" uninstallMode="0"/>
+<entry name=".install4j/i4j_extf_4_n96p7x_1qp61c0.png" shared="false" uninstallMode="2"/>
+<entry name=".install4j/user.jar" shared="false" uninstallMode="2"/>
+<entry name="class/resources/icons/malt-run48.png" shared="false" uninstallMode="0"/>
+<entry name=".install4j/i4j_extf_3_n96p7x_1sxzjn7.png" shared="false" uninstallMode="2"/>
+<entry name="malt-run" shared="false" uninstallMode="0"/>
+<entry name="uninstall" shared="false" uninstallMode="0"/>
+<entry name=".install4j/launchers.xml" shared="false" uninstallMode="2"/>
+<entry name="jars/data.jar" shared="false" uninstallMode="0"/>
+<entry name=".install4j/i4jparams.conf" shared="false" uninstallMode="2"/>
+<entry name="License.txt" shared="false" uninstallMode="0"/>
+<entry name=".install4j/i4j_extf_2_n96p7x_cwz6mn.png" shared="false" uninstallMode="2"/>
+<entry name=".install4j/install.prop" shared="false" uninstallMode="0"/>
+<entry name=".install4j/malt-build.png" shared="false" uninstallMode="2"/>
+<entry name="malt-build.vmoptions" shared="false" uninstallMode="3"/>
+<entry name="jars/MALT.jar" shared="false" uninstallMode="0"/>
+<entry name=".install4j/response.varfile" shared="false" uninstallMode="0"/>
+<entry name=".install4j/i4j_extf_1_n96p7x.txt" shared="false" uninstallMode="2"/>
+<entry name=".install4j/autoUninstall.1" shared="false" uninstallMode="0"/>
+</createdFiles>
+<createdDirs>
+<entry name="jars" shared="false" uninstallMode="0"/>
+<entry name="class/resources/icons" shared="false" uninstallMode="0"/>
+<entry name="class/resources" shared="false" uninstallMode="0"/>
+<entry name="class" shared="false" uninstallMode="0"/>
+<entry name=".install4j" shared="false" uninstallMode="0"/>
+</createdDirs>
+</fileLog>

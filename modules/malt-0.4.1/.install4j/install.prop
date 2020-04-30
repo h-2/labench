@@ -1,0 +1,6 @@
+#
+#Fri Jan 31 22:29:04 CET 2020
+launcher2=/srv/hdd/h4nn3s/labench/modules/malt-0.4.1/malt-run
+launcher0=/srv/hdd/h4nn3s/labench/modules/malt-0.4.1/.install4j/automaticUpdater
+launcher1=/srv/hdd/h4nn3s/labench/modules/malt-0.4.1/malt-build
+languageId=en

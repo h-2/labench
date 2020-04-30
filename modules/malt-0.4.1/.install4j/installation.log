@@ -1,0 +1,214 @@
+[INFO] logger started at Fri Jan 31 22:27:04 CET 2020
+[INFO] executable name: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/MALT_unix_0_4_1.sh
+[INFO] install4j version: 6.1.6 (build 6459)
+[INFO] Properties: 
+-- listing properties --
+awt.toolkit=sun.awt.X11.XToolkit
+java.specification.version=11
+sun.cpu.isalist=
+sun.jnu.encoding=UTF-8
+java.class.path=i4jruntime.jar
+java.vm.vendor=Debian
+sun.arch.data.model=64
+install4j.exeDir=/srv/hdd/h4nn3s/labench/modules/malt-...
+sun.font.fontmanager=sun.awt.X11FontManager
+java.vendor.url=https://tracker.debian.org/openjdk-11
+user.timezone=Europe/Berlin
+os.name=Linux
+java.vm.specification.version=11
+sun.java.launcher=SUN_STANDARD
+user.country=DE
+sun.boot.library.path=/usr/lib/jvm/java-11-openjdk-amd64/lib
+sun.java.command=com.install4j.runtime.launcher.UnixLa...
+jdk.debug=release
+sun.cpu.endian=little
+user.home=/home/mi/h4nn3s
+user.language=de
+java.specification.vendor=Oracle Corporation
+java.version.date=2020-01-14
+java.home=/usr/lib/jvm/java-11-openjdk-amd64
+file.separator=/
+java.vm.compressedOopsMode=Zero based
+line.separator=
+
+java.specification.name=Java Platform API Specification
+java.vm.specification.vendor=Oracle Corporation
+java.awt.graphicsenv=sun.awt.X11GraphicsEnvironment
+exe4j.moduleName=/srv/hdd/h4nn3s/labench/modules/malt-...
+sun.management.compiler=HotSpot 64-Bit Tiered Compilers
+i4jv=0
+java.runtime.version=11.0.6+10-post-Debian-1deb10u1
+user.name=h4nn3s
+path.separator=:
+os.version=4.19.0-6-amd64
+java.runtime.name=OpenJDK Runtime Environment
+sun.java2d.noddraw=true
+file.encoding=UTF-8
+java.vm.name=OpenJDK 64-Bit Server VM
+install4j.jvmDir=/usr/lib/jvm/java-11-openjdk-amd64
+install4j.cwd=/srv/hdd/h4nn3s/labench/modules/malt-...
+install4j.appDir=/srv/hdd/h4nn3s/labench/modules/malt-...
+java.vendor.url.bug=https://bugs.debian.org/openjdk-11
+java.io.tmpdir=/tmp
+java.version=11.0.6
+user.dir=/srv/hdd/h4nn3s/labench/modules/malt-...
+os.arch=amd64
+java.vm.specification.name=Java Virtual Machine Specification
+exe4j.totalDataLength=29738743
+java.awt.printerjob=sun.print.PSPrinterJob
+sun.os.patch.level=unknown
+java.library.path=/srv/hdd/h4nn3s/labench/modules/malt-...
+java.vendor=Debian
+java.vm.info=mixed mode, sharing
+java.vm.version=11.0.6+10-post-Debian-1deb10u1
+sun.io.unicode.encoding=UnicodeLittle
+java.class.version=55.0
+i4j.vpt=true
+[INFO] com.install4j.runtime.beans.actions.misc.RequestPrivilegesAction [ID 1691242625]: Execute action
+       Property obtainIfAdminWin: true
+       Property obtainIfNormalWin: false
+       Property failIfNotObtainedWin: true
+       Property obtainIfAdminMac: false
+       Property obtainIfNormalMac: false
+       Property failIfNotObtainedMac: true
+       Property failIfNotRootUnix: false
+       Property allRequested: false
+       Property rollbackSupported: false
+       Execute action successful after 2 ms
+[INFO] com.install4j.runtime.beans.screens.StartupScreen [ID 15]: command: move 1 screens, executing actions, checking condition
+[INFO] com.install4j.runtime.beans.screens.WelcomeScreen [ID 1691242173]: Show screen
+[INFO] com.install4j.runtime.beans.screens.WelcomeScreen [ID 1691242173]: command: move 1 screens, executing actions, checking condition
+[INFO] com.install4j.runtime.beans.screens.LicenseScreen [ID 1691242174]: Show screen
+[INFO] com.install4j.runtime.beans.screens.LicenseScreen [ID 1691242174]: command: move 1 screens, executing actions, checking condition
+[INFO] com.install4j.runtime.beans.screens.InstallationDirectoryScreen [ID 1691242175]: Show screen
+       checking writable with maximum
+       Variable changed: sys.installationDir=/srv/hdd/h4nn3s/labench/modules/malt-0.4.1[class java.lang.String]
+[INFO] com.install4j.runtime.beans.screens.InstallationDirectoryScreen [ID 1691242175]: command: move 1 screens, executing actions, checking condition
+[INFO] com.install4j.runtime.beans.screens.ComponentsScreen [ID 1691242176]: Show screen
+[INFO] com.install4j.runtime.beans.screens.ComponentsScreen [ID 1691242176]: command: move 1 screens, executing actions, checking condition
+[INFO] com.install4j.runtime.beans.screens.StandardProgramGroupScreen [ID 1691242177]: Show screen
+       Variable changed: sys.programGroupDisabled=true[class java.lang.Boolean]
+[INFO] com.install4j.runtime.beans.screens.StandardProgramGroupScreen [ID 1691242177]: command: move 1 screens, executing actions, checking condition
+[INFO] com.install4j.runtime.beans.screens.InstallationScreen [ID 1691242179]: Show screen
+[INFO] com.install4j.runtime.beans.actions.UninstallPreviousAction [ID 1691243478]: Execute action
+       Property logFiles: []
+       Property onlyIfSameApplicationId: true
+       Property uninstallServices: true
+       Property installerVariables: {}
+       Property installationDirectory: null
+       Property rollbackSupported: true
+       checking running processes
+       checking running processes ok
+       getting previous installation id
+       no previous installation detected, uninstaller was not started
+       finished
+       Execute action successful after 4 ms
+[INFO] com.install4j.runtime.beans.actions.InstallFilesAction [ID 1691242180]: Execute action
+       Property checkFreeSpace: true
+       Property validateApplicationId: false
+       Property sizeCalculatorScript: null
+       Property saveDownloadedFiles: false
+       Property installRuntime: true
+       Property updateBundledJre: true
+       Property triggerReboot: true
+       Property delay: false
+       Property fileFilterScript: null
+       Property directoryResolverScript: null
+       Property showFileNames: true
+       Property rollbackSupported: true
+       Component Manual[1691242193]; Selected: true
+       Component malt-build[1691243097]; Selected: true
+       Component malt-run[1691243098]; Selected: true
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/.install4j/2bfa42ba.lprop; size: 55 bytes; exists: false
+       File options set to: [fileTime: Thu May 24 15:47:18 CEST 2018, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/.install4j/8d06ae4d.lprop; size: 55 bytes; exists: false
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/.install4j/automaticUpdater; size: 13426 bytes; exists: false
+       File options set to: [fileTime: Thu May 24 15:47:18 CEST 2018, mode: 755, overwriteMode: If newer otherwise ask, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/.install4j/automaticUpdater.png; size: 4831 bytes; exists: false
+       File options set to: [fileTime: Thu May 24 15:47:18 CEST 2018, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: Always, delayIfNecessary: false]
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/.install4j/c67b37b5.lprop; size: 55 bytes; exists: false
+       File options set to: [fileTime: Thu May 24 15:47:18 CEST 2018, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/.install4j/d35820b3.lprop; size: 55 bytes; exists: false
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/.install4j/malt-build.png; size: 5475 bytes; exists: false
+       File options set to: [fileTime: Thu May 24 15:47:18 CEST 2018, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: Always, delayIfNecessary: false]
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/.install4j/malt-run.png; size: 4421 bytes; exists: false
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/.install4j/uninstall.png; size: 73008 bytes; exists: false
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/uninstall; size: 13552 bytes; exists: false
+       File options set to: [fileTime: Thu May 24 15:47:18 CEST 2018, mode: 700, overwriteMode: If newer otherwise ask, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/malt-run; size: 12997 bytes; exists: false
+       File options set to: [fileTime: Thu May 24 15:47:18 CEST 2018, mode: 755, overwriteMode: If newer otherwise ask, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/malt-run.vmoptions; size: 243 bytes; exists: false
+       File options set to: [fileTime: Thu May 24 15:47:18 CEST 2018, mode: 644, overwriteMode: Never, shared: false, uninstallMode: If created, but not for update, delayIfNecessary: false]
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/malt-build; size: 13007 bytes; exists: false
+       File options set to: [fileTime: Thu May 24 15:47:18 CEST 2018, mode: 755, overwriteMode: If newer otherwise ask, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/malt-build.vmoptions; size: 243 bytes; exists: false
+       File options set to: [fileTime: Thu May 24 15:47:18 CEST 2018, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, but not for update, delayIfNecessary: false]
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/License.txt; size: 775 bytes; exists: false
+       File options set to: [fileTime: Thu May 24 15:47:18 CEST 2018, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/manual.pdf; size: 203751 bytes; exists: false
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/class/log4j.properties; size: 2455 bytes; exists: false
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/class/resources/icons/malt-build48.png; size: 5475 bytes; exists: false
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/class/resources/icons/malt-run48.png; size: 4421 bytes; exists: false
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/jars/MALT.jar; size: 4641119 bytes; exists: false
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/jars/data.jar; size: 24731618 bytes; exists: false
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/.install4j/inst_jre.cfg; size: 35 bytes; exists: false
+       File options set to: [fileTime: Fri Jan 31 22:27:57 CET 2020, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/.install4j/i4jruntime.jar; size: 1578538 bytes; exists: false
+       File options set to: [fileTime: Fri Jan 31 22:27:57 CET 2020, mode: 644, overwriteMode: Always, shared: false, uninstallMode: Always, delayIfNecessary: false]
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/.install4j/MessagesDefault; size: 33534 bytes; exists: false
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/.install4j/i4jparams.conf; size: 67602 bytes; exists: false
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/.install4j/stats.properties; size: 1019 bytes; exists: false
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/.install4j/launchers.xml; size: 66 bytes; exists: false
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/.install4j/user.jar; size: 18597 bytes; exists: false
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/.install4j/i4j_extf_0_n96p7x.utf8; size: 33534 bytes; exists: false
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/.install4j/i4j_extf_2_n96p7x_cwz6mn.png; size: 1028 bytes; exists: false
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/.install4j/i4j_extf_4_n96p7x_1qp61c0.png; size: 4831 bytes; exists: false
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/.install4j/i4j_extf_1_n96p7x.txt; size: 775 bytes; exists: false
+       Install file: /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/.install4j/i4j_extf_3_n96p7x_1sxzjn7.png; size: 2565 bytes; exists: false
+       Execute action successful after 381 ms
+[INFO] com.install4j.runtime.beans.actions.desktop.RegisterAddRemoveAction [ID 1691242182]: Execute action
+       Property itemName: MALT 0.4.1
+       Property iconSource: Installer icon
+       Property icon: null
+       Property persistentProperties: {}
+       Property rollbackSupported: true
+       Execute action successful after 1 ms
+[INFO] com.install4j.runtime.beans.screens.InstallationScreen [ID 1691242179]: Rollback barrier reached
+       command: move 1 screens, executing actions, checking condition
+[INFO] com.install4j.runtime.beans.screens.FormScreen [ID 1691242744]: Show screen
+[INFO] com.install4j.runtime.beans.screens.FormScreen [ID 1691242744]: command: move 1 screens, executing actions, checking condition
+[INFO] com.install4j.runtime.beans.screens.FormScreen [ID 1691242944]: Show screen
+       Variable changed: myXmx=200[class java.lang.Integer]
+[INFO] com.install4j.runtime.beans.actions.misc.AddVmOptionsAction [ID 1691242947]: Execute action
+       Property vmOptions: [-Xmx200G]
+       Property launcherId: 1691242235
+       Property macosVmOptionsType: Next to the application bundle
+       Property rollbackSupported: true
+[ERROR] com.install4j.runtime.beans.actions.misc.AddVmOptionsAction [ID 1691242947]: launcher file null does not exist.
+        Execute action not successful after 1 ms
+[INFO] com.install4j.runtime.beans.actions.misc.AddVmOptionsAction [ID 1691243401]: Execute action
+       Property vmOptions: [-Xmx200G]
+       Property launcherId: 1691243093
+       Property macosVmOptionsType: Next to the application bundle
+       Property rollbackSupported: true
+[ERROR] com.install4j.runtime.beans.actions.misc.AddVmOptionsAction [ID 1691243401]: launcher file null does not exist.
+        Execute action not successful after 0 ms
+[INFO] com.install4j.runtime.beans.actions.misc.AddVmOptionsAction [ID 1691243399]: Execute action
+       Property vmOptions: [-Xmx200G]
+       Property launcherId: 1691243204
+       Property macosVmOptionsType: Next to the application bundle
+       Property rollbackSupported: true
+       Backing up /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/malt-build.vmoptions
+       Execute action successful after 2 ms
+[INFO] com.install4j.runtime.beans.actions.misc.AddVmOptionsAction [ID 1691243400]: Execute action
+       Property vmOptions: [-Xmx200G]
+       Property launcherId: 1691243207
+       Property macosVmOptionsType: Next to the application bundle
+       Property rollbackSupported: true
+       Backing up /srv/hdd/h4nn3s/labench/modules/malt-0.4.1/malt-run.vmoptions
+       Execute action successful after 1 ms
+[INFO] com.install4j.runtime.beans.screens.FormScreen [ID 1691242944]: command: move 1 screens, executing actions, checking condition
+[INFO] com.install4j.runtime.beans.screens.FinishedScreen [ID 1691242183]: Show screen
+[INFO] com.install4j.runtime.beans.screens.FinishedScreen [ID 1691242183]: command: finish
+       cleaning up
+       Finished

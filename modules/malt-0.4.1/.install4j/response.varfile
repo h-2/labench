@@ -1,0 +1,9 @@
+# install4j response file for MALT 0.4.1
+myXmx$Integer=200
+sys.adminRights$Boolean=false
+sys.component.1691242193$Boolean=true
+sys.component.1691243097$Boolean=true
+sys.component.1691243098$Boolean=true
+sys.installationDir=/srv/hdd/h4nn3s/labench/modules/malt-0.4.1
+sys.languageId=en
+sys.programGroupDisabled$Boolean=true
